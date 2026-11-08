@@ -1,0 +1,3139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Empty Café</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Team problem-solving game: find out why Corner Cup lost 40% of its sales, then choose the one fix that saves it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one column (max 980px) on a warm-grey ground under a dark header band.
+   The case is a file folder, the 12 clues are a numbered exhibit board, evidence opens in its
+   native format (till receipt, ledger, notice, post, listing), and the fixes are priced quotes. */
+:root{
+  color-scheme:light;
+  --bg:#F2F0EC;
+  --surface:#FFFFFF;
+  --paper:#FFFDF6;
+  --ink:#171411;
+  --muted:#615B53;
+  --line:#E2DDD4;
+  --accent:#C9420E;
+  --accent-ink:#B23A0C;
+  --accent-soft:#FCE5DA;
+  --on-accent:#FFFFFF;
+  --band:#171411;
+  --band-ink:#F6F2EC;
+  --band-muted:#C2BAAF;
+  --band-kicker:#FF9B6E;
+  --good:#1D7A47; --good-soft:#DCF0E3;
+  --warn:#8F5600; --warn-soft:#FBEBCD;
+  --bad:#B42318;  --bad-soft:#FBE2DF;
+  --star:#B7791F; --star-off:#DDD6CB;
+  --note:#FFF2B8; --note-ink:#3D3200;
+  --qr-bg:#FFFFFF; --qr-fg:#171411;
+  --focus:#2F5BD3;
+  --scrim:rgba(23,20,17,.48);
+  --shadow:0 1px 0 rgba(23,20,17,.04),0 10px 24px -14px rgba(23,20,17,.35);
+  --font-display:"Anton","Impact","Haettenschweiler","Arial Narrow Bold",sans-serif;
+  --font-body:"Instrument Sans","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141210; --surface:#1E1B18; --paper:#25211C; --ink:#F2EEE8; --muted:#ACA499; --line:#37322C;
+    --accent:#E8622B; --accent-ink:#FF9466; --accent-soft:#3A2318; --on-accent:#1A0E08;
+    --band:#0B0A09; --band-ink:#F2EEE8; --band-muted:#A39B90; --band-kicker:#FF9B6E;
+    --good:#5DC98B; --good-soft:#15301F; --warn:#E6B24F; --warn-soft:#382A11; --bad:#FF7B6F; --bad-soft:#3B1917;
+    --star:#F0B429; --star-off:#4A433B;
+    --note:#3A3317; --note-ink:#F5E7A8;
+    --focus:#8EB4FF; --scrim:rgba(0,0,0,.62);
+    --shadow:0 1px 0 rgba(0,0,0,.3),0 10px 24px -12px rgba(0,0,0,.75);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141210; --surface:#1E1B18; --paper:#25211C; --ink:#F2EEE8; --muted:#ACA499; --line:#37322C;
+  --accent:#E8622B; --accent-ink:#FF9466; --accent-soft:#3A2318; --on-accent:#1A0E08;
+  --band:#0B0A09; --band-ink:#F2EEE8; --band-muted:#A39B90; --band-kicker:#FF9B6E;
+  --good:#5DC98B; --good-soft:#15301F; --warn:#E6B24F; --warn-soft:#382A11; --bad:#FF7B6F; --bad-soft:#3B1917;
+  --star:#F0B429; --star-off:#4A433B;
+  --note:#3A3317; --note-ink:#F5E7A8;
+  --focus:#8EB4FF; --scrim:rgba(0,0,0,.62);
+  --shadow:0 1px 0 rgba(0,0,0,.3),0 10px 24px -12px rgba(0,0,0,.75);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+img{max-width:100%}
+p{margin:0}
+h1,h2,h3,h4{text-wrap:balance}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.wrap{max-width:980px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap-wide{max-width:1180px}
+
+/* Header band */
+.band{background:var(--band);color:var(--band-ink)}
+.band-inner{padding-block:34px 38px;display:grid;gap:14px}
+.band-top{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--band-kicker);font-weight:500}
+.pill{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--band-kicker);color:var(--band-kicker);padding:3px 8px;border-radius:999px;white-space:nowrap}
+.title{font-family:var(--font-display);font-weight:400;font-size:clamp(52px,12vw,112px);line-height:.9;letter-spacing:.005em;text-transform:uppercase;margin:0}
+.lede{max-width:58ch;color:var(--band-muted);font-size:17px}
+
+main.wrap{display:grid;gap:26px;padding-block:24px 48px}
+
+/* Steps strip */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.step{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 12px 10px;display:grid;gap:2px;min-width:0}
+.step-k{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step-v{font-family:var(--font-display);font-size:clamp(14px,3.7vw,26px);line-height:1.1;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step[data-s="now"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.step[data-s="now"] .step-k{color:var(--accent-ink);font-weight:600}
+.step[data-s="done"] .step-v{color:var(--good)}
+.step[data-s="todo"] .step-v{color:var(--muted)}
+
+/* Stage scaffolding */
+.stage{display:grid;gap:18px}
+.stage-head{display:grid;gap:6px}
+.stage-h{font-family:var(--font-display);font-weight:400;font-size:clamp(32px,6.5vw,46px);line-height:1;text-transform:uppercase;margin:0}
+.stage-intro{color:var(--muted);max-width:62ch;font-size:17px}
+.sub-h{font-family:var(--font-display);font-weight:400;font-size:26px;line-height:1;text-transform:uppercase;margin:6px 0 0}
+.sub-h span{color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;display:grid;gap:12px;min-width:0}
+.label{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);font-weight:600}
+.hint,.note{color:var(--muted);font-size:14.5px}
+.err{color:var(--bad);font-weight:600}
+.empty{border:1px dashed var(--line);border-radius:8px;padding:16px;color:var(--muted);text-align:center}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* Buttons */
+.btn{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--bg);font:inherit;font-weight:600;padding:11px 18px;border-radius:8px;cursor:pointer;min-height:46px;line-height:1.2}
+.btn-accent{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn-danger{background:var(--bad);border-color:var(--bad);color:var(--on-accent)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn-block{width:100%}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.linkbtn{appearance:none;background:none;border:0;color:var(--accent-ink);font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px 2px}
+
+/* Case file */
+.casefile{position:relative;margin-top:28px;background:var(--surface);border:1px solid var(--line);border-radius:0 var(--radius) var(--radius) var(--radius);padding:22px 20px 20px}
+.casefile-tab{position:absolute;left:-1px;top:-28px;height:29px;padding:0 14px;display:flex;align-items:center;background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:8px 8px 0 0;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);font-weight:600}
+.case{display:grid;gap:18px}
+.case-lead{font-size:clamp(18px,2.6vw,21px);line-height:1.5;max-width:60ch}
+.case-p{max-width:64ch}
+.facts{margin:0;display:grid;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper)}
+.facts > div{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:12px;padding:9px 14px;border-top:1px solid var(--line)}
+.facts > div:first-child{border-top:0}
+.facts dt{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.facts dd{margin:0;font-weight:600;min-width:0}
+.quote{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:start;max-width:64ch}
+.quote::before{content:"\201C";font-family:var(--font-display);font-size:64px;line-height:.85;color:var(--accent)}
+.quote p{font-size:clamp(17px,2.3vw,19px);line-height:1.5;font-weight:500}
+.quote cite{grid-column:2;font-style:normal;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.case-talk{display:grid;gap:8px}
+.rumours{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.rumours li{border-left:3px solid var(--line);padding:3px 0 3px 12px}
+.mission{background:var(--accent-soft);border-radius:8px;padding:12px 14px;font-weight:600;display:grid;gap:4px}
+.recase{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.recase summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.recase summary::-webkit-details-marker{display:none}
+.recase summary::after{content:"+";font-family:var(--font-mono);font-size:18px;color:var(--muted)}
+.recase[open] summary::after{content:"\2212"}
+.recase .case-slot,.recase .ev-slot{padding:0 16px 16px}
+.ev-slot{display:grid;gap:12px}
+
+/* Inputs */
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{display:grid;gap:6px;min-width:0}
+.field-wide{grid-column:1/-1}
+.field-l{font-weight:600;font-size:14.5px}
+input[type="text"],textarea.input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-height:46px;width:100%}
+textarea.input{min-height:96px;resize:vertical;line-height:1.45}
+input[type="text"]::placeholder,textarea.input::placeholder{color:var(--muted);opacity:.8}
+input[type="text"]:focus-visible,textarea.input:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+
+.seg{display:grid;gap:6px}
+.seg-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.seg-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.seg-5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.segbtn{position:relative;display:grid;place-items:center;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px 6px;cursor:pointer;min-height:46px;background:var(--surface);font-weight:600;line-height:1.25}
+.segbtn input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.segbtn.is-on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.segbtn:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+.scale{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
+
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.opt{position:relative;display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:11px 14px;cursor:pointer;min-width:0}
+.opt input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.opt-key{font-family:var(--font-mono);font-weight:600;font-size:13px;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:none;color:var(--muted)}
+.opt-t{font-weight:500;line-height:1.35}
+.opt.is-on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.opt.is-on .opt-key{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.opt:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+
+/* Status bar */
+.statusbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.sb{background:var(--surface);padding:9px 14px 10px;display:grid;align-content:start;min-width:0}
+.sb-k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-v{font-family:var(--font-mono);font-size:clamp(22px,5vw,28px);font-weight:600;line-height:1.15;font-variant-numeric:tabular-nums}
+.sb-note{font-size:12.5px;color:var(--muted);line-height:1.3}
+.sb[data-tone="warn"] .sb-v{color:var(--warn)}
+.sb[data-tone="bad"] .sb-v{color:var(--bad)}
+.sb[data-tone="good"] .sb-v{color:var(--good)}
+
+/* Team stage */
+.rules{margin:0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:r}
+.rules li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;align-items:baseline}
+.rules li::before{counter-increment:r;content:counter(r);font-family:var(--font-display);font-size:22px;line-height:1;color:var(--muted)}
+.banner{border:2px solid var(--ink);border-radius:var(--radius);padding:12px 16px;font-family:var(--font-display);font-size:clamp(20px,4.2vw,30px);line-height:1.1;text-transform:uppercase;text-wrap:balance}
+.bonusnote{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14.5px;color:var(--muted)}
+.bonusnote strong{color:var(--ink)}
+
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tile{appearance:none;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:11px 12px 10px;display:grid;grid-template-rows:auto auto 1fr auto;gap:5px;cursor:pointer;min-height:138px;min-width:0}
+.tile-d{font-size:13px;line-height:1.35;color:var(--muted)}
+.tile-n{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);font-weight:600}
+.tile-t{font-weight:600;line-height:1.25}
+.tile-s{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.tile.is-open{background:var(--accent-soft);border-color:transparent}
+.tile.is-open .tile-s{color:var(--accent-ink);font-weight:600}
+.tile.is-extra{border-style:dashed}
+.tile.is-extra .tile-s{color:var(--warn);font-weight:600}
+.tile:disabled{opacity:.5;cursor:not-allowed}
+
+.evidence{display:grid;gap:12px}
+.ev{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;display:grid;gap:10px;scroll-margin-top:110px;min-width:0}
+.ev:focus{outline:none}
+.ev:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.ev-head{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ev-num{color:var(--accent-ink);font-weight:600}
+.ev-order{margin-left:auto}
+.ev-title{margin:0;font-size:18px;line-height:1.3}
+.ev-body{min-width:0;display:grid;gap:10px;justify-items:start}
+.ev-body > *{max-width:100%}
+@media (prefers-reduced-motion: no-preference){
+  .ev.is-new{animation:land .4s ease-out}
+  @keyframes land{from{transform:translateY(-6px);box-shadow:0 0 0 3px var(--accent-soft)}to{transform:none;box-shadow:none}}
+}
+
+/* Evidence in its native formats */
+.receipt{font-family:var(--font-mono);font-size:13.5px;background:var(--paper);border:1px dashed var(--muted);border-radius:3px;padding:14px 16px;width:100%;max-width:440px;line-height:1.5;display:grid;gap:6px}
+.receipt-h{text-align:center;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.receipt-sub{text-align:center;color:var(--muted);font-size:12px}
+.receipt table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.receipt th{font-weight:500;color:var(--muted);text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px dashed var(--muted);padding:4px 0 5px 8px}
+.receipt th:first-child,.receipt td:first-child{text-align:left;padding-left:0}
+.receipt td{text-align:right;padding:4px 0 4px 8px}
+.receipt tfoot td{border-top:1px dashed var(--muted);font-weight:600;padding-top:6px}
+.receipt-foot{border-top:1px dashed var(--muted);padding-top:7px;font-size:12.5px}
+.scroll{overflow-x:auto;max-width:100%;width:100%}
+.ledger{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:15px}
+.ledger caption{text-align:left;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-bottom:6px}
+.ledger th,.ledger td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:right}
+.ledger .dn{color:var(--bad);font-weight:600}
+.ledger th:first-child,.ledger td:first-child{text-align:left;padding-left:0}
+.ledger thead th{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.ledger tfoot td{font-weight:700;border-bottom:0}
+.ledger-short{min-width:0;max-width:420px}
+.memo{background:var(--note);color:var(--note-ink);max-width:380px;padding:12px 14px 13px;border-radius:2px;box-shadow:var(--shadow);display:grid;gap:4px;transform:rotate(-.6deg);font-size:15px;line-height:1.45}
+.memo-k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.notice{border:2px solid var(--ink);padding:14px 16px;border-radius:2px;display:grid;gap:6px;max-width:460px;background:var(--paper)}
+.notice-from,.letter-from,.data-from{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.notice-h{font-family:var(--font-display);font-size:26px;text-transform:uppercase;line-height:1}
+.post{border:1px solid var(--line);border-radius:12px;padding:14px;max-width:470px;display:grid;gap:10px;background:var(--paper)}
+.post-who{display:flex;gap:10px;align-items:center}
+.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;background:var(--accent-soft);color:var(--accent-ink);flex:none}
+.post-name{font-weight:600;line-height:1.2}
+.post-meta{font-size:12.5px;color:var(--muted)}
+.post-stats{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
+.comment{font-size:14px;background:var(--bg);border-radius:10px;padding:8px 11px}
+.comment b{font-weight:600}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-width:470px}
+.pair > div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--paper);min-width:0}
+.pair-k{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pair-v{font-family:var(--font-mono);font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.2}
+.data{display:grid;gap:8px;max-width:470px}
+.listing{border:1px solid var(--line);border-radius:12px;padding:14px 16px;max-width:470px;display:grid;gap:8px;background:var(--paper)}
+.listing-name{font-size:20px;font-weight:700;line-height:1.2}
+.listing-meta{font-size:14px;color:var(--muted)}
+.listing-row{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;border-top:1px solid var(--line);padding-top:8px;font-size:14.5px}
+.listing-row span:first-child{color:var(--muted)}
+.stars{color:var(--star);letter-spacing:1px}
+.star-off{color:var(--star-off)}
+.reviews{list-style:none;margin:0;padding:0;display:grid;gap:8px;max-width:470px;width:100%}
+.reviews li{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--paper);display:grid;gap:3px}
+.rv-meta{font-size:12.5px;color:var(--muted)}
+.letter{background:var(--paper);border:1px solid var(--line);padding:16px 18px;max-width:480px;display:grid;gap:8px}
+.ad{border:1px dashed var(--ink);padding:14px 16px;max-width:430px;background:var(--paper);display:grid;gap:6px}
+.ad-h{font-family:var(--font-display);font-size:28px;text-transform:uppercase;line-height:1}
+
+/* Decide */
+.proofs{display:grid;gap:8px}
+.proof{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;background:var(--surface);min-width:0}
+.proof input{accent-color:var(--accent);width:18px;height:18px;flex:none;margin:0}
+.proof.is-on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.proof.is-dim{opacity:.55;cursor:not-allowed}
+.proof-n{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);font-weight:600;white-space:nowrap}
+.proof-t{font-weight:600;min-width:0}
+
+/* Fix: priced quotes */
+.locked{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.locked b{font-size:18px}
+.fixes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.fixc{position:relative;display:grid;grid-template-rows:auto auto 1fr auto;gap:7px;border:1px solid var(--line);background:var(--paper);border-radius:var(--radius);padding:14px 16px 13px;cursor:pointer;min-width:0}
+.fixc input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.fixc-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.fixc-n{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);font-weight:600}
+.fixc-dot{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--muted);flex:none}
+.fixc-t{font-weight:700;font-size:17px;line-height:1.3}
+.fixc-d{color:var(--muted);font-size:14.5px;line-height:1.45}
+.fixc-meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:baseline;border-top:1px dashed var(--line);padding-top:9px;font-size:14px}
+.fixc-k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eur{font-family:var(--font-mono);font-weight:600;letter-spacing:.08em;margin-right:6px}
+.eur .off{color:var(--star-off)}
+.fixc.is-on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.fixc.is-on .fixc-dot{background:var(--ink);border-color:var(--ink);box-shadow:inset 0 0 0 4px var(--paper)}
+.fixc:has(input:focus-visible){outline:2px solid var(--focus);outline-offset:2px}
+
+/* Reveal */
+.kv{display:grid;gap:12px;margin:0}
+.kv > div{display:grid;gap:2px}
+.kv dt{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.kv dd{margin:0;font-weight:600}
+.coderow{display:flex;flex-wrap:wrap;gap:8px}
+.coderow input{flex:1 1 180px;width:auto;font-family:var(--font-mono);letter-spacing:.12em;text-transform:uppercase}
+
+.scorehero{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.score{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;display:grid;gap:4px;align-content:start;min-width:0}
+.score-k{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.score-v{font-family:var(--font-display);font-size:62px;line-height:1;font-variant-numeric:tabular-nums}
+.score-v small{font-size:24px;color:var(--muted);margin-left:3px}
+.score-note{font-size:14px;color:var(--muted)}
+.score-main{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.score-main .score-k,.score-main .score-note,.score-main .score-v small{color:var(--bg);opacity:.72}
+.verdict{font-size:clamp(18px,2.6vw,21px);font-weight:600;border-left:4px solid var(--muted);padding:2px 0 2px 14px}
+.verdict[data-tone="good"]{border-color:var(--good)}
+.verdict[data-tone="warn"]{border-color:var(--warn)}
+.verdict[data-tone="bad"]{border-color:var(--bad)}
+
+.bd{width:100%;border-collapse:collapse}
+.bd td{padding:10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.bd td:last-child{text-align:right;font-family:var(--font-mono);font-weight:600;white-space:nowrap;padding-left:14px;font-variant-numeric:tabular-nums}
+.bd tr.total td{border-bottom:0;font-size:18px;font-weight:700}
+.bd .sub{display:block;font-size:13.5px;color:var(--muted);font-weight:400}
+.pos{color:var(--good)} .neg{color:var(--bad)} .zero{color:var(--muted)}
+
+.truth{background:var(--accent-soft);border-radius:var(--radius);padding:22px 22px 20px;display:grid;gap:12px}
+.truth h3{font-family:var(--font-display);font-weight:400;font-size:clamp(28px,5vw,36px);text-transform:uppercase;margin:0;line-height:1}
+.truth p{max-width:66ch}
+.truth .fix{font-weight:600}
+.truth .why{font-size:14.5px;border-top:1px solid var(--line);padding-top:10px;color:var(--muted)}
+
+.exlist{list-style:none;margin:0;padding:0;display:grid}
+.exrow{display:grid;gap:4px;padding:12px 0;border-bottom:1px solid var(--line)}
+.exrow:last-child{border-bottom:0}
+.exrow-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.exrow-n{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);font-weight:600}
+.exrow-t{font-weight:600}
+.exrow-tags{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto}
+.exrow-m{color:var(--muted);font-size:15px}
+.exrow.is-mine{background:var(--bg);margin-inline:-10px;padding-inline:10px;border-radius:8px}
+.chip{display:inline-block;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;font-weight:600;white-space:nowrap}
+.chip-key{background:var(--good-soft);color:var(--good)}
+.chip-clear{background:var(--line);color:var(--ink)}
+.chip-mixed{background:var(--warn-soft);color:var(--warn)}
+.chip-trap{background:var(--bad-soft);color:var(--bad)}
+.chip-open{background:var(--ink);color:var(--bg)}
+.think{margin:0;padding-left:20px;display:grid;gap:6px}
+
+/* Save card */
+.save-row{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);gap:18px;align-items:start}
+.save-prev{margin:0;display:grid;gap:6px}
+.prev-box{appearance:none;display:block;width:100%;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:6px;cursor:zoom-in;min-height:120px}
+.prev-box img{display:block;width:100%;height:auto;border-radius:4px}
+.stack{display:grid;gap:10px;align-content:start;min-width:0}
+.fine{font-size:13px;color:var(--muted)}
+#copy-fallback{min-height:150px;font-family:var(--font-mono);font-size:13px}
+
+/* Feedback */
+.q{display:grid;gap:8px;padding-block:16px;border-top:1px solid var(--line)}
+.q:first-child{border-top:0;padding-top:0}
+.q-top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.q-n{font-family:var(--font-mono);font-size:12px;color:var(--accent-ink);font-weight:600}
+.q-t{font-weight:600;flex:1 1 auto;min-width:0}
+.req{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.done-card{justify-items:start;padding:28px 24px}
+.done-mark{width:52px;height:52px;border-radius:50%;background:var(--good-soft);color:var(--good);display:grid;place-items:center}
+.done-mark svg{width:28px;height:28px}
+
+/* Modal and card viewer */
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--scrim);padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.modal-box{background:var(--surface);color:var(--ink);border-radius:12px;max-width:430px;width:100%;padding:20px;display:grid;gap:12px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.modal-box h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:28px;line-height:1.05;text-transform:uppercase}
+.modal-body{display:grid;gap:8px}
+.viewer{place-items:start center;overflow-y:auto}
+.viewer-box{width:100%;max-width:640px;display:grid;gap:10px}
+.viewer-box img{display:block;width:100%;height:auto;border-radius:10px;box-shadow:var(--shadow)}
+.viewer-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--band-ink);font-size:14px}
+
+.foot{border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;align-items:center;color:var(--muted);font-size:13.5px}
+.foot span{max-width:70ch}
+
+/* Facilitator screen */
+.host{display:grid;grid-template-columns:minmax(0,370px) minmax(0,1fr);gap:20px;align-items:start}
+.is-host .band-inner{padding-block:22px 24px;gap:10px}
+.is-host .title{font-size:clamp(40px,6vw,64px)}
+.join{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:grid;gap:12px;box-shadow:var(--shadow)}
+.join-h{font-family:var(--font-display);font-weight:400;font-size:34px;line-height:1;text-transform:uppercase;margin:0}
+.qr-tile{width:100%;max-width:330px;aspect-ratio:1;background:var(--qr-bg);border-radius:6px;overflow:hidden;color:var(--qr-fg);font-size:14px}
+.qr-tile svg{display:block;width:100%;height:100%}
+.qr-bg{fill:var(--qr-bg)}
+.qr-fg{fill:var(--qr-fg)}
+.join-url{font-family:var(--font-mono);font-size:14px;font-weight:600;overflow-wrap:anywhere}
+.join-msg{font-size:13px;color:var(--muted);min-height:1.2em}
+.host-main{display:grid;gap:16px;min-width:0}
+.clock-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.clock-phase{font-family:var(--font-display);font-weight:400;font-size:clamp(30px,5vw,44px);text-transform:uppercase;margin:0;line-height:1}
+.clock-label{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.clock-time{font-family:var(--font-mono);font-weight:600;font-size:clamp(64px,13vw,128px);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.clock-time[data-tone="warn"]{color:var(--warn)}
+.clock-time[data-tone="bad"]{color:var(--bad)}
+.clock-tip{color:var(--muted);max-width:62ch}
+.clock-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+.rail{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.rail button{appearance:none;width:100%;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:grid;gap:1px;cursor:pointer;min-width:0}
+.r-n,.r-m{font-family:var(--font-mono);font-size:10.5px;color:var(--muted)}
+.r-t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail button[data-s="now"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.rail button[data-s="done"] .r-t{color:var(--good)}
+.say,.bul{margin:0;padding-left:22px;display:grid;gap:8px}
+.say li::marker{font-family:var(--font-mono);color:var(--accent-ink);font-weight:600}
+.codebox{font-family:var(--font-display);font-size:clamp(56px,12vw,104px);line-height:1;letter-spacing:.06em;color:var(--accent-ink)}
+.angle{background:var(--accent-soft);border-radius:8px;padding:12px 14px;font-weight:500}
+.sbr-rows{display:grid;gap:6px}
+.sbr{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:6px}
+.sbr input.num{text-align:right;font-family:var(--font-mono)}
+.rank{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.rank li{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+.rank li:first-child:not(.empty){border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.rank li.empty{display:block;color:var(--muted);text-align:center;border-style:dashed;background:transparent}
+.rk{font-family:var(--font-display);font-size:22px;line-height:1}
+.rt{font-weight:600;overflow-wrap:anywhere}
+.rs{font-family:var(--font-mono);font-weight:600;font-variant-numeric:tabular-nums}
+.rs small{color:var(--muted);font-weight:500;margin-left:8px}
+.more{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.more summary{cursor:pointer;padding:12px 16px;font-weight:600}
+.more-body{padding:0 16px 16px;display:grid;gap:10px}
+.key-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.key-grid > div{display:grid;gap:3px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--paper)}
+
+@media (hover:hover){
+  .btn:hover{filter:brightness(1.06)}
+  .btn-ghost:hover{border-color:var(--ink);filter:none}
+  .segbtn:hover,.opt:hover,.proof:not(.is-dim):hover,.fixc:hover,.rail button:hover{border-color:var(--ink)}
+  .tile:not(:disabled):not(.is-open):hover{border-color:var(--ink)}
+}
+@media (max-width:900px){
+  .host{grid-template-columns:1fr}
+  .join{position:static}
+  .rail{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .board{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .fields,.opts,.fixes,.key-grid{grid-template-columns:1fr}
+  .scorehero{grid-template-columns:1fr}
+  .save-row{grid-template-columns:1fr}
+  .prev-box{max-width:260px}
+  .card{padding:16px}
+  .casefile{padding:20px 16px 16px}
+  .sb{padding:8px 10px 9px}
+  .ev-order{margin-left:0}
+  .facts > div{grid-template-columns:minmax(0,1fr);gap:0}
+}
+@media (max-width:560px){
+  .board{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steps{gap:4px}
+  .step{padding:7px 5px 8px}
+  .step-k{font-size:9.5px;letter-spacing:.04em}
+  .step-v{font-size:13.5px;text-overflow:clip}
+  .ledger{font-size:14px}
+  .ledger th,.ledger td{padding:7px 5px}
+  .rail{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media print{
+  .statusbar,.actions,.foot,.modal,.recase{display:none!important}
+}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="wrap band-inner">
+    <div class="band-top">
+      <span class="kicker">Team Building and Leadership · Session 9 · Problem-solving</span>
+      <span class="pill" id="band-pill">Team game · 29 min</span>
+    </div>
+    <h1 class="title">The Empty Café</h1>
+    <p class="lede" id="band-lede">Corner Cup lost 40% of its sales. Guess alone, investigate as a team, lock the real reason, then choose the one fix the owner should pay for.</p>
+  </div>
+</header>
+
+<main class="wrap" id="play">
+  <ol class="steps" id="steps" aria-label="Progress">
+    <li class="step" data-s="now"><span class="step-k">Step 1</span><span class="step-v">Alone</span></li>
+    <li class="step" data-s="todo"><span class="step-k">Step 2</span><span class="step-v">Team</span></li>
+    <li class="step" data-s="todo"><span class="step-k">Step 3</span><span class="step-v">Decide</span></li>
+    <li class="step" data-s="todo"><span class="step-k">Step 4</span><span class="step-v">Fix</span></li>
+    <li class="step" data-s="todo"><span class="step-k">Step 5</span><span class="step-v">Reveal</span></li>
+  </ol>
+
+  <div class="statusbar" id="statusbar" hidden>
+    <div class="sb" id="sb-0"><span class="sb-k" id="sb-0-k">Time left</span><span class="sb-v" id="sb-0-v">10:00</span><span class="sb-note" id="sb-0-n">of 10:00</span></div>
+    <div class="sb" id="sb-1"><span class="sb-k" id="sb-1-k">Exhibits left</span><span class="sb-v" id="sb-1-v">5</span><span class="sb-note" id="sb-1-n">of 5</span></div>
+    <div class="sb" id="sb-2"><span class="sb-k" id="sb-2-k">Early bonus</span><span class="sb-v" id="sb-2-v">+5</span><span class="sb-note" id="sb-2-n">until 4:00 left</span></div>
+  </div>
+
+  <!-- STEP 1 · ALONE -->
+  <section class="stage" id="stage-alone" aria-labelledby="h-alone">
+    <div class="casefile">
+      <span class="casefile-tab">Case file · Corner Cup</span>
+      <div id="case-full"></div>
+    </div>
+
+    <div class="stage-head">
+      <h2 class="stage-h" id="h-alone">Step 1 · Alone</h2>
+      <p class="stage-intro">About 3 minutes. No talking yet. Read the case, pick the reason you believe right now, and say how sure you are.</p>
+    </div>
+
+    <div class="card">
+      <div class="fields">
+        <div class="field"><label class="field-l" for="f-name">Your name</label><input id="f-name" type="text" maxlength="40" autocomplete="given-name"></div>
+        <div class="field"><label class="field-l" for="f-team">Your team</label><input id="f-team" type="text" maxlength="30" placeholder="e.g. Team 3"></div>
+        <div class="field field-wide">
+          <span class="field-l" id="where-l">Where are you today?</span>
+          <div class="seg seg-2" id="where" role="radiogroup" aria-labelledby="where-l">
+            <label class="segbtn"><input type="radio" name="where" value="room" id="where-room"><span>In the room</span></label>
+            <label class="segbtn"><input type="radio" name="where" value="online" id="where-online"><span>Online</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="label" id="solo-l">Your gut call: what is the main reason?</p>
+      <div class="opts" id="solo-opts" role="radiogroup" aria-labelledby="solo-l"></div>
+    </div>
+
+    <div class="card">
+      <p class="label" id="conf-l">How sure are you?</p>
+      <div class="seg seg-5" id="conf" role="radiogroup" aria-labelledby="conf-l">
+        <label class="segbtn"><input type="radio" name="conf" value="1" id="conf-1"><span>1</span></label>
+        <label class="segbtn"><input type="radio" name="conf" value="2" id="conf-2"><span>2</span></label>
+        <label class="segbtn"><input type="radio" name="conf" value="3" id="conf-3"><span>3</span></label>
+        <label class="segbtn"><input type="radio" name="conf" value="4" id="conf-4"><span>4</span></label>
+        <label class="segbtn"><input type="radio" name="conf" value="5" id="conf-5"><span>5</span></label>
+      </div>
+      <div class="scale"><span>1 = just guessing</span><span>5 = certain</span></div>
+    </div>
+
+    <p class="err" id="alone-err" role="alert" hidden></p>
+    <div class="actions"><button type="button" class="btn btn-accent" id="lock-solo">Lock my gut call</button></div>
+  </section>
+
+  <!-- STEP 2 · TEAM -->
+  <section class="stage" id="stage-team" aria-labelledby="h-team" hidden>
+    <div class="stage-head">
+      <h2 class="stage-h" id="h-team">Step 2 · Team</h2>
+      <p class="stage-intro">Your gut call is saved. You'll see it again at the reveal.</p>
+    </div>
+
+    <div class="card" id="team-wait">
+      <ol class="rules">
+        <li>Join your team: in the room, or on a call with your online members.</li>
+        <li>You have 10 minutes to find the reason. There are 12 exhibits, and you can open 5. A 6th costs your team 2 points.</li>
+        <li>Agree before opening each exhibit. Everyone opens the same one on their own page.</li>
+        <li>Lock your reason early for a bonus: +5 with 4:00 or more left, +3 with 2:00 or more left. Finishing early always earns it.</li>
+        <li>Then you get 3 minutes to choose the one fix Hiba should pay for.</li>
+      </ol>
+      <div class="scroll">
+        <table class="bd" aria-label="How your team scores">
+          <tbody>
+            <tr><td>The real reason<span class="sub">Half right: 5</span></td><td>10</td></tr>
+            <tr><td>Your proof<span class="sub">1 point for each exhibit that really backs your answer</span></td><td>up to 2</td></tr>
+            <tr><td>Finish early<span class="sub">When you lock the reason</span></td><td>+5 or +3</td></tr>
+            <tr><td>The exact right fix<span class="sub">Half fix: +4</span></td><td>+8</td></tr>
+            <tr><td>A 6th exhibit</td><td>−2</td></tr>
+            <tr class="total"><td>Best possible</td><td>25</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">When your facilitator says go, everyone in your team presses Start at the same time.</p>
+      <div class="actions"><button type="button" class="btn btn-accent" id="start-team">Start the team investigation</button></div>
+    </div>
+
+    <div class="stage" id="team-live" hidden>
+      <details class="recase"><summary>Re-read the case</summary><div class="case-slot"></div></details>
+      <p class="banner">Agree on each exhibit. Same five for everyone.</p>
+      <p class="bonusnote"><span><strong>Lock your reason early:</strong> +5 with 4:00 or more left, +3 with 2:00 or more left.</span><span>Finishing early always counts.</span></p>
+
+      <h3 class="sub-h">Exhibits <span>· 12</span></h3>
+      <div class="board" id="board"></div>
+
+      <h3 class="sub-h">Your evidence <span id="ev-count"></span></h3>
+      <div class="evidence" id="evidence"></div>
+
+      <div class="actions"><button type="button" class="btn btn-accent" id="to-decide">Go to the decision</button></div>
+    </div>
+  </section>
+
+  <!-- STEP 3 · DECIDE -->
+  <section class="stage" id="stage-decide" aria-labelledby="h-decide" hidden>
+    <div class="stage-head">
+      <h2 class="stage-h" id="h-decide">Step 3 · Decide</h2>
+      <p class="stage-intro">Agree on one reason. Everyone locks the same reason on their own page. Your finish-early bonus is set the moment you lock.</p>
+    </div>
+    <details class="recase"><summary>Re-read the case</summary><div class="case-slot"></div></details>
+
+    <div class="card">
+      <p class="label" id="q1-l">1 · The real reason</p>
+      <div class="opts" id="dec-opts" role="radiogroup" aria-labelledby="q1-l"></div>
+    </div>
+    <div class="card">
+      <p class="label" id="q2-l">2 · Your proof</p>
+      <p class="hint" id="proof-hint">Pick the 2 exhibits that best prove your answer.</p>
+      <div class="proofs" id="proofs" role="group" aria-labelledby="q2-l"></div>
+    </div>
+
+    <p class="err" id="dec-err" role="alert" hidden></p>
+    <div class="actions">
+      <button type="button" class="btn btn-ghost" id="back-team">Back to the exhibits</button>
+      <button type="button" class="btn btn-accent" id="lock-reason">Lock our reason</button>
+    </div>
+  </section>
+
+  <!-- STEP 4 · FIX -->
+  <section class="stage" id="stage-fix" aria-labelledby="h-fix" hidden>
+    <div class="stage-head">
+      <h2 class="stage-h" id="h-fix">Step 4 · Fix</h2>
+      <p class="stage-intro">Hiba can pay for one fix. Choose the one that removes the cause, not just the symptom. Each quote shows what it costs and how fast it works.</p>
+    </div>
+    <div class="card">
+      <p class="label">Your locked reason</p>
+      <div class="locked" id="fix-locked"></div>
+    </div>
+    <details class="recase"><summary><span>Your evidence <span id="fix-ev-count"></span></span></summary><div class="ev-slot" id="fix-evidence"></div></details>
+
+    <div class="fixes" id="fixes" role="radiogroup" aria-label="Choose one fix"></div>
+
+    <p class="err" id="fix-err" role="alert" hidden></p>
+    <div class="actions"><button type="button" class="btn btn-accent" id="lock-fix">Lock our fix</button></div>
+  </section>
+
+  <!-- STEP 5 · REVEAL -->
+  <section class="stage" id="stage-reveal" aria-labelledby="h-reveal" hidden>
+    <div class="stage" id="reveal-wait">
+      <div class="stage-head">
+        <h2 class="stage-h" id="h-reveal">Answers locked</h2>
+        <p class="stage-intro" id="lock-line"></p>
+      </div>
+      <div class="card"><dl class="kv" id="locked-summary"></dl></div>
+      <div class="card">
+        <label class="label" for="f-code">Reveal code</label>
+        <p class="hint">Wait for your facilitator. They read out the code once every team has locked its fix.</p>
+        <div class="coderow">
+          <input id="f-code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12">
+          <button type="button" class="btn btn-accent" id="do-reveal">Reveal the truth</button>
+        </div>
+        <p class="err" id="code-err" role="alert" hidden></p>
+      </div>
+    </div>
+
+    <div class="stage" id="reveal-done" hidden>
+      <div class="stage-head">
+        <h2 class="stage-h">Step 5 · Reveal</h2>
+      </div>
+      <div class="scorehero" id="scorehero"></div>
+      <p class="verdict" id="verdict"></p>
+      <div class="card">
+        <p class="label">How your team scored</p>
+        <div class="scroll"><table class="bd" id="breakdown"></table></div>
+      </div>
+      <div class="truth">
+        <h3>What really happened</h3>
+        <p>In July, rent and milk went up, so Hiba cut her wage bill by €900 a month: two people on the morning shift instead of three.</p>
+        <p>With fewer hours, her two most experienced baristas, Ana and Tomas, left at the end of August. Hiba hired beginners: “No experience needed.”</p>
+        <p>Two beginners at the busiest time of the day made the line crawl. About 38 students a day walked out of the line, and many stopped coming in the morning at all. Mornings fell 71%. The rest of the day barely moved.</p>
+        <p>FastBean got the blame, but it only opens at 10:00. The bus stop moved, but just as many people still walk past. Corner Cup is still the cheapest café on the street, and the beans never changed.</p>
+        <p class="fix">The best fix: rebuild a full, trained morning team (fix 05). It costs about €1,200 a month. The empty mornings cost Hiba about €8,000 a month.</p>
+        <p class="why">Why “Morning service got slow” scores 5, not 10: the slow line is real, but it's the result. The cause is why the line got slow.</p>
+      </div>
+      <div class="card">
+        <p class="label">All 8 fixes, rated</p>
+        <ul class="exlist" id="fixlist"></ul>
+      </div>
+      <div class="card">
+        <p class="label">All 12 exhibits</p>
+        <ul class="exlist" id="exlist"></ul>
+      </div>
+      <div class="card">
+        <p class="label">Before the debrief</p>
+        <ul class="think">
+          <li>Which exhibit did your team skip that would have changed your answer?</li>
+          <li>Did the fix you chose match the reason you locked?</li>
+          <li>Did someone suggest an exhibit that the team didn't open? Why not?</li>
+        </ul>
+      </div>
+      <div class="card" id="save-card">
+        <div class="stage-head">
+          <p class="label">Save your result</p>
+          <h3 class="sub-h">Download your result card</h3>
+          <p class="hint">Your name, your team, your gut call and your team's result in one file.</p>
+        </div>
+        <div class="save-row">
+          <figure class="save-prev">
+            <button type="button" class="prev-box" id="prev-open" aria-label="Open your result card full size"><img id="card-preview" alt="Your result card" hidden></button>
+            <figcaption class="fine">Tap the card to open it. On a phone you can also press and hold it to save the image.</figcaption>
+          </figure>
+          <div class="stack">
+            <button type="button" class="btn btn-accent btn-block" id="dl-png">Download PNG</button>
+            <button type="button" class="btn btn-ghost btn-block" id="dl-pdf">Download PDF</button>
+            <p class="fine" id="dl-msg" aria-live="polite"></p>
+            <div><button type="button" class="linkbtn" id="copy">Copy my result as text</button> <span class="fine" id="copy-msg" aria-live="polite"></span></div>
+          </div>
+        </div>
+        <textarea class="input" id="copy-fallback" readonly hidden aria-label="Your result as text"></textarea>
+      </div>
+      <div class="actions"><button type="button" class="btn btn-accent" id="to-feedback">Next: give feedback · 1 minute</button></div>
+    </div>
+  </section>
+
+  <!-- FEEDBACK -->
+  <section class="stage" id="stage-feedback" aria-labelledby="h-fb" hidden>
+    <div class="stage-head">
+      <p class="label">Feedback · anonymous · about 1 minute</p>
+      <h2 class="stage-h" id="h-fb">How did it go?</h2>
+      <p class="stage-intro">Our objective was better problem-solving: finding the real cause and the right fix as a team.</p>
+    </div>
+    <div class="card">
+      <div class="q">
+        <div class="q-top"><span class="q-n">01</span><span class="q-t" id="fq1">Did the activity reach its objective?</span><span class="req">Required</span></div>
+        <div class="seg seg-5" id="fb-objective" role="radiogroup" aria-labelledby="fq1">
+          <label class="segbtn"><input type="radio" name="fb-objective" id="fbo-1" value="1"><span>1</span></label>
+          <label class="segbtn"><input type="radio" name="fb-objective" id="fbo-2" value="2"><span>2</span></label>
+          <label class="segbtn"><input type="radio" name="fb-objective" id="fbo-3" value="3"><span>3</span></label>
+          <label class="segbtn"><input type="radio" name="fb-objective" id="fbo-4" value="4"><span>4</span></label>
+          <label class="segbtn"><input type="radio" name="fb-objective" id="fbo-5" value="5"><span>5</span></label>
+        </div>
+        <div class="scale"><span>1 = not at all</span><span>5 = completely</span></div>
+      </div>
+      <div class="q">
+        <div class="q-top"><span class="q-n">02</span><span class="q-t" id="fq2">Were the instructions clear?</span><span class="req">Required</span></div>
+        <div class="seg seg-5" id="fb-clarity" role="radiogroup" aria-labelledby="fq2">
+          <label class="segbtn"><input type="radio" name="fb-clarity" id="fbc-1" value="1"><span>1</span></label>
+          <label class="segbtn"><input type="radio" name="fb-clarity" id="fbc-2" value="2"><span>2</span></label>
+          <label class="segbtn"><input type="radio" name="fb-clarity" id="fbc-3" value="3"><span>3</span></label>
+          <label class="segbtn"><input type="radio" name="fb-clarity" id="fbc-4" value="4"><span>4</span></label>
+          <label class="segbtn"><input type="radio" name="fb-clarity" id="fbc-5" value="5"><span>5</span></label>
+        </div>
+        <div class="scale"><span>1 = not clear</span><span>5 = very clear</span></div>
+      </div>
+      <div class="q">
+        <div class="q-top"><span class="q-n">03</span><label class="q-t" for="fb-improve">One thing to improve</label><span class="req">Required</span></div>
+        <textarea class="input" id="fb-improve" maxlength="300" placeholder="One sentence is enough."></textarea>
+      </div>
+      <div class="q">
+        <div class="q-top"><span class="q-n">04</span><span class="q-t" id="fq4">Was the time right?</span><span class="req">Optional</span></div>
+        <div class="seg seg-3" id="fb-time" role="radiogroup" aria-labelledby="fq4">
+          <label class="segbtn"><input type="radio" name="fb-time" id="fbt-short" value="short"><span>Too short</span></label>
+          <label class="segbtn"><input type="radio" name="fb-time" id="fbt-right" value="right"><span>About right</span></label>
+          <label class="segbtn"><input type="radio" name="fb-time" id="fbt-long" value="long"><span>Too long</span></label>
+        </div>
+      </div>
+      <div class="q">
+        <div class="q-top"><span class="q-n">05</span><span class="q-t" id="fq5">Did working as a team help you find the answer?</span><span class="req">Optional</span></div>
+        <div class="seg seg-5" id="fb-teamwork" role="radiogroup" aria-labelledby="fq5">
+          <label class="segbtn"><input type="radio" name="fb-teamwork" id="fbw-1" value="1"><span>1</span></label>
+          <label class="segbtn"><input type="radio" name="fb-teamwork" id="fbw-2" value="2"><span>2</span></label>
+          <label class="segbtn"><input type="radio" name="fb-teamwork" id="fbw-3" value="3"><span>3</span></label>
+          <label class="segbtn"><input type="radio" name="fb-teamwork" id="fbw-4" value="4"><span>4</span></label>
+          <label class="segbtn"><input type="radio" name="fb-teamwork" id="fbw-5" value="5"><span>5</span></label>
+        </div>
+        <div class="scale"><span>1 = not at all</span><span>5 = a lot</span></div>
+      </div>
+      <p class="err" id="fb-err" role="alert" hidden></p>
+      <button type="button" class="btn btn-accent btn-block" id="fb-send">Send feedback</button>
+      <p class="fine">No names or teams are sent with your feedback.</p>
+    </div>
+    <div class="actions"><button type="button" class="linkbtn" id="fb-back">Back to my results</button></div>
+  </section>
+
+  <!-- DONE -->
+  <section class="stage" id="stage-done" aria-labelledby="h-done" hidden>
+    <div class="card done-card">
+      <span class="done-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg></span>
+      <h2 class="stage-h" id="h-done">Thank you</h2>
+      <p class="stage-intro" id="done-line">Case closed.</p>
+      <button type="button" class="btn btn-ghost" id="done-back">Back to my results</button>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Made by Seven Kings for Session 9. Adapted from root cause analysis (the “5 Whys”). The case, exhibits, fixes and scoring are our own, and Corner Cup, FastBean and everyone in the case are invented.</span>
+    <button type="button" class="linkbtn" id="reset">Start over on this device</button>
+  </footer>
+</main>
+
+<!-- FACILITATOR SCREEN (#host) -->
+<main class="wrap wrap-wide" id="host" hidden>
+  <div class="host">
+    <aside class="join" aria-labelledby="join-h">
+      <p class="label">Scan to play</p>
+      <h2 class="join-h" id="join-h">The Empty Café</h2>
+      <div class="qr-tile" id="qr"></div>
+      <p class="join-url" id="join-url"></p>
+      <div class="actions"><button type="button" class="btn" id="copy-link">Copy link</button></div>
+      <p class="join-msg" id="copy-link-msg" aria-live="polite"></p>
+    </aside>
+
+    <div class="host-main">
+      <section class="card" aria-labelledby="clock-phase">
+        <div class="clock-top"><h2 class="clock-phase" id="clock-phase">Intro</h2><span class="clock-label" id="clock-label">Ready</span></div>
+        <div class="clock-time" id="clock-time" role="timer">2:00</div>
+        <p class="clock-tip" id="clock-tip"></p>
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" id="h-back">Back</button>
+          <button type="button" class="btn btn-accent" id="h-start">Start</button>
+          <button type="button" class="btn" id="h-next">Next part</button>
+        </div>
+        <div class="clock-meta"><span id="clock-total">Session 0:00 of 29:00</span><button type="button" class="linkbtn" id="h-reset">Reset clock</button></div>
+      </section>
+
+      <ol class="rail" id="rail" aria-label="Session parts"></ol>
+
+      <section class="card" data-panel="intro">
+        <p class="label">Say it · lead facilitator</p>
+        <ol class="say">
+          <li>Today you're consultants. Corner Cup, a café next to the university, sells 40% less than last year. Find the real reason and the one fix the owner, Hiba, should pay for.</li>
+          <li>Scan the code. Type your name and your team.</li>
+          <li>First, 3 minutes alone: read the case and make a gut call. No talking.</li>
+          <li>Then 10 minutes as a team: open up to 5 of the 12 exhibits and lock the reason. Lock early for +5 or +3. A 6th exhibit costs 2 points.</li>
+          <li>Then 3 minutes to choose one fix. The exact right fix is worth 8.</li>
+        </ol>
+      </section>
+      <section class="card" data-panel="alone" hidden>
+        <p class="label">While they read</p>
+        <ul class="bul">
+          <li>No talking for these 3 minutes.</li>
+          <li>Teams of 4 or 5. Online players can form their own team on a separate call.</li>
+          <li>Online host: keep the class call muted.</li>
+        </ul>
+      </section>
+      <section class="card" data-panel="team" hidden>
+        <p class="label">While teams investigate</p>
+        <ul class="bul">
+          <li>Say "go": everyone in a team presses Start at the same time.</li>
+          <li>Teams agree before opening an exhibit. Everyone opens the same one on their own phone.</li>
+          <li>At 4:00 left: "Lock now for +5." At 2:00 left: "Last call for +3."</li>
+          <li>Online team: one person shares their screen on their own call.</li>
+        </ul>
+      </section>
+      <section class="card" data-panel="fix" hidden>
+        <p class="label">While teams choose a fix</p>
+        <ul class="bul">
+          <li>Each team's 3-minute fix timer starts the moment it locks its reason.</li>
+          <li>Eight fixes, each with a cost and how fast it works. One is exactly right (+8). Two are half fixes (+4).</li>
+          <li>When every team has locked its fix, go to the reveal.</li>
+        </ul>
+      </section>
+      <section class="card" data-panel="reveal" hidden>
+        <p class="label">Reveal</p>
+        <div class="actions"><button type="button" class="btn btn-accent" id="h-code">Show the reveal code</button></div>
+        <p class="codebox" id="h-codebox" hidden></p>
+        <p class="clock-tip">After the reveal, everyone saves their result card (PNG or PDF), then gives feedback.</p>
+        <div class="stage">
+          <h3 class="sub-h">Scoreboard</h3>
+          <p class="fine">Ask each team for its score (out of 25) and type it in.</p>
+          <div class="sbr-rows" id="sbr-rows"></div>
+          <div class="actions"><button type="button" class="btn btn-ghost" id="sbr-add">Add a team</button></div>
+          <ol class="rank" id="sbr-rank"></ol>
+        </div>
+      </section>
+      <section class="card" data-panel="debrief" hidden>
+        <p class="label">Debrief · about 90 seconds per question</p>
+        <ol class="say">
+          <li><b>What happened?</b> Who blamed FastBean, the prices or the bus stop in their gut call? What changed your mind?</li>
+          <li><b>How did your team work?</b> How did you choose your 5 exhibits? Did anyone's idea get ignored?</li>
+          <li><b>What does it tell us about teams at work?</b> The loud rumours weren't the answer. The quiet numbers were.</li>
+          <li><b>What will you do differently?</b> Find where it breaks before asking why. Check a fix against the cause, its cost and its speed.</li>
+        </ol>
+        <p class="angle">Leadership angle: Hiba's own €900 saving cost her about €8,000 a month. Nobody suspected the owner.</p>
+      </section>
+      <section class="card" data-panel="feedback" hidden>
+        <p class="label">Feedback</p>
+        <p class="clock-tip">Everyone taps <b>Next: give feedback</b> under their results. It's anonymous and takes about a minute.</p>
+      </section>
+
+      <details class="more">
+        <summary>Answer key (facilitators only)</summary>
+        <div class="more-body">
+          <div class="key-grid">
+            <div><span class="label">Reason</span><b>F · Changes in the café's staff</b><span class="fine">10 points. E, morning service got slow, is the symptom: 5.</span></div>
+            <div><span class="label">Fix</span><b>05 · Rebuild a full, trained morning team</b><span class="fine">+8. Fix 02 (a third person) and fix 07 (training) are half fixes: +4.</span></div>
+          </div>
+          <p class="fine">Key exhibits: 02 shows where (mornings only), 04, 07 and 12 show why (staff), and 10 shows the walkouts. 05 mixes signal and noise. The traps are 01, FastBean's buzz, and 03, the bus stop.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</main>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h2 id="modal-title"></h2>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="actions">
+      <button type="button" class="btn" id="modal-ok">OK</button>
+      <button type="button" class="btn btn-ghost" id="modal-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal viewer" id="viewer" hidden>
+  <div class="viewer-box" role="dialog" aria-modal="true" aria-label="Your result card">
+    <div class="viewer-bar"><span>Press and hold (or right-click) the card to save it.</span><button type="button" class="btn btn-ghost" id="viewer-x">Close</button></div>
+    <img id="viewer-img" alt="Your result card">
+  </div>
+</div>
+
+<script>
+/* QR Code encoder for JavaScript. Copyright (c) 2009 Kazuhiko Arase. Licensed under the MIT license.
+   "QR Code" is a registered trademark of DENSO WAVE INCORPORATED. Bundled from qrcode-terminal's vendor copy. */
+var MakeQR = (function () {
+  var F = {}, C = {};
+  function req(p) { var k = p.replace(/^\.\//, "").replace(/\.js$/, ""); if (!(k in C)) { var m = { exports: {} }; C[k] = m.exports; F[k](m, m.exports, req); C[k] = m.exports; } return C[k]; }
+  F["QRMode"] = function (module, exports, require) {
+module.exports = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
+
+};
+  F["QRErrorCorrectLevel"] = function (module, exports, require) {
+module.exports = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
+};
+  F["QRMaskPattern"] = function (module, exports, require) {
+module.exports = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
+};
+  F["QRMath"] = function (module, exports, require) {
+var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+module.exports = QRMath;
+
+};
+  F["QRPolynomial"] = function (module, exports, require) {
+var QRMath = require('./QRMath');
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+module.exports = QRPolynomial;
+
+};
+  F["QR8bitByte"] = function (module, exports, require) {
+var QRMode = require('./QRMode');
+
+function QR8bitByte(data) {
+	this.mode = QRMode.MODE_8BIT_BYTE;
+	this.data = data;
+}
+
+QR8bitByte.prototype = {
+
+	getLength : function() {
+		return this.data.length;
+	},
+	
+	write : function(buffer) {
+		for (var i = 0; i < this.data.length; i++) {
+			// not JIS ...
+			buffer.put(this.data.charCodeAt(i), 8);
+		}
+	}
+};
+
+module.exports = QR8bitByte;
+
+};
+  F["QRBitBuffer"] = function (module, exports, require) {
+function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+module.exports = QRBitBuffer;
+
+};
+  F["QRRSBlock"] = function (module, exports, require) {
+var QRErrorCorrectLevel = require('./QRErrorCorrectLevel');
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+module.exports = QRRSBlock;
+
+};
+  F["QRUtil"] = function (module, exports, require) {
+var QRMode = require('./QRMode');
+var QRPolynomial = require('./QRPolynomial');
+var QRMath = require('./QRMath');
+var QRMaskPattern = require('./QRMaskPattern');
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+module.exports = QRUtil;
+
+};
+  F["index"] = function (module, exports, require) {
+//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = require('./QR8bitByte');
+var QRUtil = require('./QRUtil');
+var QRPolynomial = require('./QRPolynomial');
+var QRRSBlock = require('./QRRSBlock');
+var QRBitBuffer = require('./QRBitBuffer');
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+module.exports = QRCode;
+
+};
+  var QRCode = req("index"), ECL = req("QRErrorCorrectLevel");
+  return function (text) { var q = new QRCode(-1, ECL.M); q.addData(text); q.make(); var n = q.getModuleCount(); return { size: n, isDark: function (r, c) { return q.isDark(r, c); } }; };
+})();
+
+</script>
+<script>
+(() => {
+  "use strict";
+
+  /* ---------- Settings ---------- */
+  const KEY = "empty-cafe-v2";
+  const HOST_KEY = "empty-cafe-host-v2";
+  const LIMIT = 5;              // exhibits a team can open
+  const EXTRA_COST = -2;        // a 6th exhibit
+  const TEAM_SECONDS = 600;     // 10 minutes to investigate and lock the reason
+  const BONUS5_LEFT = 240;      // +5 when the reason is locked with 4:00 or more left
+  const BONUS3_LEFT = 120;      // +3 when it is locked with 2:00 or more left
+  const FIX_SECONDS = 180;      // 3 minutes to choose the fix
+  const MAX = 25;
+  const REVEAL_CODE = "HIBA";
+  /* On a normal website the QR code points to this page's own address. Inside the Claude app it
+     points here instead: the public GitHub Pages link that anyone can open. */
+  const SHARE_URL = "https://olkifar.github.io/empty-cafe/";
+  /* To collect results and feedback in a Google Sheet, paste the Apps Script web app URL here
+     (it ends in /exec). Collection runs on the public website, not inside the Claude app. */
+  const COLLECT_URL = "";
+  const LETTERS = "ABCDEF";
+  const TIME_LABEL = { short: "Too short", right: "About right", long: "Too long" };
+  const WHERE_LABEL = { room: "In the room", online: "Online" };
+
+  const OPTIONS = [
+    { id: "fastbean", label: "FastBean took the customers" },
+    { id: "prices",   label: "Prices went up" },
+    { id: "coffee",   label: "The coffee got worse" },
+    { id: "busstop",  label: "The bus stop moved" },
+    { id: "slow",     label: "Morning service got slow" },
+    { id: "staff",    label: "Changes in the café's staff" }
+  ];
+  const ANSWER_POINTS = { staff: 10, slow: 5 };
+  const ON_TRACK = ["staff", "slow"];
+  const GOOD_PROOF = ["sales", "costs", "reviews", "ad", "cancelled", "fbpost", "counter", "fbpage"];
+  const VERDICT = {
+    staff:    ["good", "You found the root cause."],
+    slow:     ["warn", "Half right. Slow mornings are the symptom. The cause is why they got slow."],
+    busstop:  ["bad",  "The smart trap. The stop moved, but just as many people still walk past."],
+    fastbean: ["bad",  "The obvious suspect. FastBean only opens at 10:00, after the morning rush."],
+    prices:   ["bad",  "Every café raised its prices, and Corner Cup is still the cheapest on the street."],
+    coffee:   ["bad",  "Same supplier and the same beans for four years. The coffee didn't change."]
+  };
+  const ROLE = {
+    key:   { label: "Key",       cls: "chip-key",   order: 0 },
+    mixed: { label: "Mixed",     cls: "chip-mixed", order: 1 },
+    clear: { label: "Rules out", cls: "chip-clear", order: 2 },
+    trap:  { label: "Trap",      cls: "chip-trap",  order: 3 }
+  };
+
+  const CASE_HTML = `<div class="case">
+    <p class="case-lead"><strong>Corner Cup</strong> is a small café two minutes from the university. Hiba opened it four years ago, and it became the students' morning stop: a cappuccino to go on the way to the first lecture. Last year there was a line out the door every morning.</p>
+    <p class="case-p">This year was harder. Rent, milk and electricity all went up, so Hiba tightened the budget wherever she could. In August a new coffee shop, FastBean, opened down the street. Since September, Corner Cup sells <strong>40% less</strong>, and Hiba has savings for about three more months.</p>
+    <dl class="facts">
+      <div><dt>Owner</dt><dd>Hiba, since 2022</dd></div>
+      <div><dt>Open</dt><dd>Monday to Friday, 07:30–18:00</dd></div>
+      <div><dt>Customers</dt><dd>Mostly students. The rush is 08:00–10:00</dd></div>
+      <div><dt>Best seller</dt><dd>Cappuccino to go, €2.70</dd></div>
+      <div><dt>Coffees a day</dt><dd>420 last year · 252 now</dd></div>
+    </dl>
+    <blockquote class="quote"><p>I cut every cost I could, and I'm still losing customers. Is it FastBean? Should I drop my prices? I can pay for one fix, so it has to be the right one.</p><cite>Hiba, owner of Corner Cup</cite></blockquote>
+    <div class="case-talk"><p class="label">What people in town are saying</p>
+      <ul class="rumours">
+        <li>“FastBean stole Hiba's customers.”</li>
+        <li>“Hiba raised her prices by 10% in August.”</li>
+        <li>“The bus stop outside the café moved in September.”</li>
+        <li>“A regular says the coffee doesn't taste the same.”</li>
+        <li>“The café's Google rating fell from 4.7 to 3.9.”</li>
+      </ul></div>
+    <p class="mission"><span class="label">Your mission</span>Find the real reason, prove it with the evidence, and choose the one fix Hiba should pay for.</p>
+  </div>`;
+
+  /* Exhibits in board order. The exhibit number is the position in this list. */
+  const EXHIBITS = [
+    { id: "buzz", title: "FastBean's opening buzz", inside: "How FastBean's opening post did online.", src: "Social media", role: "trap",
+      meaning: "Popular online, but FastBean doesn't open until 10:00, after the morning rush.",
+      body: `<div class="post"><div class="post-who"><span class="avatar" aria-hidden="true">F</span><div><div class="post-name">FastBean</div><div class="post-meta">Instagram · opening day, 18 August</div></div></div><p>We're open! Iced lattes, cinnamon rolls and good vibes. Come and meet your new favourite coffee spot ☕</p><div class="post-stats">3,000 likes · 240 comments · most tags are from students</div></div>` },
+    { id: "sales", title: "Sales by time of day", inside: "Coffees sold in each part of the day, this year vs last.", src: "Till report", role: "key",
+      meaning: "Only mornings fell: −71%. The rest of the day barely moved. The problem lives in the morning.",
+      body: `<div class="receipt"><div class="receipt-h">Corner Cup · Till report</div><div class="receipt-sub">Coffees sold per day · October average</div><table><thead><tr><th scope="col">Time</th><th scope="col">Last year</th><th scope="col">This year</th><th scope="col">Change</th></tr></thead><tbody><tr><td>08:00–10:00</td><td>210</td><td>60</td><td>−71%</td></tr><tr><td>10:00–14:00</td><td>120</td><td>108</td><td>−10%</td></tr><tr><td>14:00–18:00</td><td>90</td><td>84</td><td>−7%</td></tr></tbody><tfoot><tr><td>All day</td><td>420</td><td>252</td><td>−40%</td></tr></tfoot></table></div>` },
+    { id: "bus", title: "Bus stop notice", inside: "A city notice about the stop outside the café.", src: "City notice", role: "trap",
+      meaning: "It fits the morning timing, but just as many people still walk past (exhibit 06).",
+      body: `<div class="notice"><div class="notice-from">City Transport Office</div><div class="notice-h">Notice</div><p>From 1 September, the bus stop in front of Corner Cup moves 150 metres down the street, to make room for a new bike lane.</p></div>` },
+    { id: "costs", title: "Corner Cup's monthly costs", inside: "Wages, rent and supplies: this September vs last.", src: "Ledger", role: "key",
+      meaning: "Hiba cut wages by €900 a month: 2 people on the morning shift instead of 3.",
+      body: `<div class="scroll"><table class="ledger"><caption>Corner Cup · monthly costs</caption><thead><tr><th scope="col">Cost</th><th scope="col">Last Sept</th><th scope="col">This Sept</th><th scope="col">Change</th></tr></thead><tbody><tr><td>Staff wages</td><td>€6,200</td><td>€5,300</td><td class="dn">−€900</td></tr><tr><td>Rent</td><td>€2,100</td><td>€2,250</td><td>+€150</td></tr><tr><td>Coffee and milk</td><td>€1,400</td><td>€1,520</td><td>+€120</td></tr><tr><td>Electricity</td><td>€380</td><td>€450</td><td>+€70</td></tr></tbody><tfoot><tr><td>Total</td><td>€10,080</td><td>€9,520</td><td>−€560</td></tr></tfoot></table></div><p class="memo"><span class="memo-k">Hiba's note, July</span>Rent and milk are up. Save on wages: 2 people on the morning shift instead of 3.</p>` },
+    { id: "reviews", title: "Customer reviews", inside: "What customers wrote on Google since September.", src: "Reviews", role: "mixed",
+      meaning: "Two of three reviews point at slow, new staff. The price one is noise.",
+      body: `<ul class="reviews"><li><span class="stars" aria-label="2 out of 5 stars">★★<span class="star-off">★★★</span></span><p>“15 minutes for one cappuccino. Missed the start of my lecture.”</p><span class="rv-meta">Student · 2 weeks ago</span></li><li><span class="stars" aria-label="3 out of 5 stars">★★★<span class="star-off">★★</span></span><p>“A bit pricier than before, like everywhere.”</p><span class="rv-meta">Local guide · 3 weeks ago</span></li><li><span class="stars" aria-label="2 out of 5 stars">★★<span class="star-off">★★★</span></span><p>“The baristas who knew my order are gone. The new ones look lost at 8 am.”</p><span class="rv-meta">Student · 1 month ago</span></li></ul>` },
+    { id: "counter", title: "People walking past", inside: "How many people walk past the door in the mornings.", src: "City data", role: "clear",
+      meaning: "Foot traffic is almost the same. The bus stop isn't it.",
+      body: `<div class="data"><p class="data-from">Pedestrian counter outside Corner Cup</p><p>People walking past between 08:00 and 10:00, average per weekday:</p><div class="pair"><div><div class="pair-k">Last October</div><div class="pair-v">1,840</div></div><div><div class="pair-k">This October</div><div class="pair-v">1,790</div></div></div><p class="hint">Change: −3%</p></div>` },
+    { id: "ad", title: "A job ad from August", inside: "An ad Corner Cup posted on a jobs website.", src: "Jobs website", role: "key",
+      meaning: "The new morning staff are beginners.",
+      body: `<div class="ad"><div class="letter-from">Jobs website · posted 25 August</div><div class="ad-h">Barista wanted</div><p>Corner Cup, two minutes from the university. Morning shifts, 07:30–11:00. <strong>No experience needed</strong>, we'll show you. Start next week.</p></div>` },
+    { id: "prices", title: "Coffee prices on the street", inside: "Corner Cup's cappuccino price vs cafés nearby.", src: "Price check", role: "clear",
+      meaning: "Corner Cup is still the cheapest. Price isn't it.",
+      body: `<table class="ledger ledger-short"><caption>Cappuccino prices this October</caption><tbody><tr><td>Corner Cup</td><td>€2.70</td></tr><tr><td>FastBean</td><td>€3.40</td></tr><tr><td>Average of 6 cafés nearby</td><td>€3.00</td></tr></tbody></table><p class="hint">Every café on the street raised its prices this summer.</p>` },
+    { id: "fbpage", title: "FastBean's Google listing", inside: "FastBean's rating, opening hours and busiest time.", src: "Maps listing", role: "clear",
+      meaning: "FastBean opens at 10:00, after the morning rush. Not guilty.",
+      body: `<div class="listing"><div class="listing-name">FastBean</div><div class="listing-meta"><span class="stars" aria-label="4.6 out of 5 stars">★★★★<span class="star-off">★</span></span> 4.6 (812 reviews) · Coffee shop</div><div class="listing-row"><span>Hours</span><span><strong>Every day 10:00–20:00</strong></span></div><div class="listing-row"><span>Popular</span><span>Iced latte, cinnamon roll</span></div><div class="listing-row"><span>Busiest</span><span>13:00–17:00</span></div></div>` },
+    { id: "cancelled", title: "Cancelled orders", inside: "Orders cancelled before paying, this year vs last.", src: "Till report", role: "key",
+      meaning: "38 people a day give up in the morning line.",
+      body: `<div class="receipt"><div class="receipt-h">Corner Cup · Till report</div><div class="receipt-sub">Orders cancelled before payment · per day</div><table><tbody><tr><td>Last October</td><td>4</td></tr><tr><td>This October</td><td>38</td></tr></tbody></table><div class="receipt-foot">Most cancellations: 08:00–09:30<br>Reason typed by staff: “Customer left the line.”</div></div>` },
+    { id: "supplier", title: "Letter from the coffee supplier", inside: "What the bean supplier wrote to Hiba.", src: "Letter", role: "clear",
+      meaning: "Same beans for four years. The coffee didn't change.",
+      body: `<div class="letter"><div class="letter-from">Northline Coffee Roasters · to Corner Cup</div><p>Dear Hiba, thank you for four years together. Your order is unchanged: same beans, same roast, delivered fresh every Monday.</p><p>See you at our contract review in March.</p></div>` },
+    { id: "fbpost", title: "A goodbye post on Facebook", inside: "Posted on Corner Cup's page, 29 August.", src: "Social media", role: "key",
+      meaning: "The two most experienced baristas left.",
+      body: `<div class="post"><div class="post-who"><span class="avatar" aria-hidden="true">CC</span><div><div class="post-name">Corner Cup</div><div class="post-meta">Facebook · 29 August</div></div></div><p>Today Ana and Tomas leave us after four years behind our counter. Thank you for every cappuccino! ☕</p><div class="post-stats">214 likes · 37 comments</div><p class="comment"><b>Marta K.</b> Noooo! Who's going to have my order ready before I reach the till now? 😭</p></div>` }
+  ];
+
+  /* Hiba's options, as priced quotes. cost = how many € signs out of 4. */
+  const FIXES = [
+    { id: "discount", label: "Give students 10% off", detail: "A student discount on every coffee, all day.", cost: 2, costText: "about €700 a month in lost income", time: "1 week", rate: "miss",
+      why: "Corner Cup is already the cheapest café on the street. Price was never the problem." },
+    { id: "third", label: "Put a third person back on mornings", detail: "3 people from 08:00 to 10:00 again, like last year.", cost: 2, costText: "about €900 a month", time: "1 week", rate: "half",
+      why: "More hands help, but two of the three are still beginners. The line gets shorter, not short." },
+    { id: "machine", label: "Buy a faster coffee machine", detail: "A second espresso machine for the morning rush.", cost: 4, costText: "€8,500 once", time: "4 weeks", rate: "miss",
+      why: "The machine wasn't the bottleneck. Too few people with too little experience was. Expensive and slow." },
+    { id: "insta", label: "Run an Instagram campaign", detail: "Paid ads and a post every day for a month.", cost: 1, costText: "about €300", time: "2 weeks", rate: "miss",
+      why: "People still walk past every morning. They know the café. They're avoiding the line." },
+    { id: "team", label: "Rebuild a full, trained morning team", detail: "3 people on mornings again, and a senior barista trains the new staff for two weeks.", cost: 3, costText: "about €1,200 a month", time: "2 weeks", rate: "best",
+      why: "Fixes both causes: too few people and no experience. The line shrinks and students come back." },
+    { id: "loyalty", label: "Start a loyalty card", detail: "Every 10th coffee free, to win people back from FastBean.", cost: 1, costText: "about €250 a month", time: "3 weeks", rate: "miss",
+      why: "FastBean isn't even open in the morning. A free 10th coffee doesn't help when the wait is 15 minutes." },
+    { id: "train", label: "Train the new baristas", detail: "A senior barista coaches the new staff for two weeks.", cost: 1, costText: "about €400 once", time: "2 weeks", rate: "half",
+      why: "Faster baristas help, but two people still can't handle the biggest rush of the day." },
+    { id: "sign", label: "Put a sign at the new bus stop", detail: "An arrow pointing to Corner Cup, 150 m away.", cost: 1, costText: "about €150", time: "1 week", rate: "miss",
+      why: "Just as many people walk past the door. The problem is inside the café." }
+  ];
+  const FIX_POINTS = { best: 8, half: 4, miss: 0 };
+  const RATE = {
+    best: { label: "Best fix",     stars: 3, cls: "chip-key",   order: 0 },
+    half: { label: "Half fix",     stars: 2, cls: "chip-mixed", order: 1 },
+    miss: { label: "Won't fix it", stars: 0, cls: "chip-trap",  order: 2 }
+  };
+
+  const OPT = {}, EX = {}, FIX = {};
+  OPTIONS.forEach((o, i) => { o.k = LETTERS[i]; OPT[o.id] = o; });
+  EXHIBITS.forEach((e, i) => { e.n = String(i + 1).padStart(2, "0"); EX[e.id] = e; });
+  FIXES.forEach((x, i) => { x.n = String(i + 1).padStart(2, "0"); FIX[x.id] = x; });
+
+  /* ---------- Helpers ---------- */
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const pad = (n) => String(n).padStart(2, "0");
+  const fmt = (sec) => { sec = Math.max(0, Math.round(sec)); return Math.floor(sec / 60) + ":" + pad(sec % 60); };
+  const ordinal = (n) => n + (n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th");
+  const listJoin = (a) => (a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]);
+  const signed = (n) => (n > 0 ? "+" + n : n < 0 ? "−" + Math.abs(n) : "0");
+  const tone = (n) => (n > 0 ? "pos" : n < 0 ? "neg" : "zero");
+  const pct = (n) => Math.round(Math.max(0, n) / MAX * 100);
+  const optText = (id) => (OPT[id] ? OPT[id].k + " · " + OPT[id].label : "Not chosen");
+  const fixText = (id) => (FIX[id] ? "Fix " + FIX[id].n + " · " + FIX[id].label : "Not chosen");
+  const exText = (id) => "Exhibit " + EX[id].n + " · " + EX[id].title;
+  const reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const isHost = () => location.hash === "#host";
+  const load = (k) => { try { const raw = localStorage.getItem(k); return raw ? JSON.parse(raw) : null; } catch (e) { return null; } };
+
+  /* ---------- State ---------- */
+  const STAGES = ["alone", "team", "decide", "fix", "reveal", "feedback", "done"];
+  const STEP_ORDER = ["alone", "team", "decide", "fix", "reveal"];
+  const fresh = () => ({
+    v: 2, stage: "alone", name: "", team: "", where: "",
+    solo: { answer: "", conf: 0 },
+    teamStartAt: 0, opened: [], extra: false,
+    dec: { answer: "", proofs: [] }, reasonAt: 0,
+    fix: "", fixAt: 0, revealed: false,
+    fb: { objective: 0, clarity: 0, improve: "", time: "", teamwork: 0 }, fbSent: false, resultSent: false
+  });
+  function clean(s) {
+    if (!s || s.v !== 2) return null;
+    const o = Object.assign(fresh(), s);
+    o.solo = Object.assign(fresh().solo, s.solo || {});
+    o.dec = Object.assign(fresh().dec, s.dec || {});
+    o.fb = Object.assign(fresh().fb, s.fb || {});
+    o.opened = Array.isArray(s.opened) ? s.opened.filter((id) => !!EX[id]).slice(0, LIMIT + 1) : [];
+    o.dec.proofs = Array.isArray(o.dec.proofs) ? o.dec.proofs.filter((id) => o.opened.includes(id)).slice(0, 2) : [];
+    if (!OPT[o.solo.answer]) o.solo.answer = "";
+    if (!OPT[o.dec.answer]) o.dec.answer = "";
+    if (!FIX[o.fix]) o.fix = "";
+    if (!STAGES.includes(o.stage)) o.stage = "alone";
+    return o;
+  }
+  let state = fresh();
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+  /* ---------- Timing and scoring ---------- */
+  const teamSec = () => (state.teamStartAt ? Math.max(0, Math.floor(((state.reasonAt || Date.now()) - state.teamStartAt) / 1000)) : 0);
+  const fixSec = () => (state.reasonAt ? Math.max(0, Math.floor(((state.fixAt || Date.now()) - state.reasonAt) / 1000)) : 0);
+  const bonusFor = (sec) => { const left = TEAM_SECONDS - sec; return left >= BONUS5_LEFT ? 5 : left >= BONUS3_LEFT ? 3 : 0; };
+  const timeText = (sec, total) => { const left = total - sec; return left >= 0 ? fmt(left) + " left" : fmt(-left) + " over time"; };
+  const soloPts = () => ANSWER_POINTS[state.solo.answer] || 0;
+  function teamScore() {
+    const a = state.dec.answer, onTrack = ON_TRACK.includes(a);
+    const answerPts = ANSWER_POINTS[a] || 0;
+    const counted = onTrack ? state.dec.proofs.filter((id) => GOOD_PROOF.includes(id)) : [];
+    const proofPts = Math.min(2, counted.length);
+    const sec = teamSec();
+    const speedPts = state.reasonAt ? bonusFor(sec) : 0;   // finishing early always counts
+    const fx = FIX[state.fix];
+    const fixPts = fx ? FIX_POINTS[fx.rate] : 0;
+    const penalty = state.extra ? EXTRA_COST : 0;
+    return { answerPts, proofPts, counted, speedPts, sec, fixPts, penalty, onTrack, total: answerPts + proofPts + speedPts + fixPts + penalty };
+  }
+
+  /* ---------- Elements ---------- */
+  const statusbar = $("#statusbar"), board = $("#board"), evidence = $("#evidence");
+  const showErr = (el, msg) => { el.textContent = msg; el.hidden = false; };
+  const hideErr = (el) => { el.hidden = true; el.textContent = ""; };
+  function toTop() {
+    const s = isHost() ? $(".band") : $("#steps");
+    if (s) s.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  }
+  function syncOn(container) {
+    $$("label", container).forEach((l) => { const i = l.querySelector("input"); l.classList.toggle("is-on", !!(i && i.checked)); });
+  }
+
+  /* ---------- Rendering: play ---------- */
+  function renderOptions(el, name, selected) {
+    el.innerHTML = OPTIONS.map((o) => {
+      const on = o.id === selected;
+      return `<label class="opt${on ? " is-on" : ""}"><input type="radio" name="${name}" id="${name}-${o.id}" value="${o.id}"${on ? " checked" : ""}><span class="opt-key" aria-hidden="true">${o.k}</span><span class="opt-t">${esc(o.label)}</span></label>`;
+    }).join("");
+  }
+
+  function renderSteps() {
+    const cur = state.stage === "feedback" || state.stage === "done" ? STEP_ORDER.length : STEP_ORDER.indexOf(state.stage);
+    $$(".step").forEach((li, i) => {
+      let s = i < cur ? "done" : i === cur ? "now" : "todo";
+      if (i === 4 && state.revealed) s = "done";
+      li.setAttribute("data-s", s);
+      if (s === "now") li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+    });
+  }
+
+  function setCell(i, k, v, note, toneName) {
+    $(`#sb-${i}-k`).textContent = k;
+    $(`#sb-${i}-v`).textContent = v;
+    $(`#sb-${i}-n`).textContent = note;
+    $(`#sb-${i}`).setAttribute("data-tone", toneName || "");
+  }
+  function renderStatus() {
+    const st = state.stage;
+    const show = !isHost() && !!state.teamStartAt && (st === "team" || st === "decide" || st === "fix");
+    statusbar.hidden = !show;
+    if (!show) return;
+    if (st === "fix") {
+      const left = FIX_SECONDS - fixSec(), b = bonusFor(teamSec());
+      setCell(0, "Fix time left", left >= 0 ? fmt(left) : "+" + fmt(-left), left >= 0 ? "of " + fmt(FIX_SECONDS) : "Time's up. Lock your fix.", left < 0 ? "bad" : left <= 30 ? "warn" : "");
+      setCell(1, "Opened", String(state.opened.length), state.extra ? "6th used: −2" : "of 5", state.extra ? "bad" : "");
+      setCell(2, "Early bonus", "+" + b, b ? "earned when you locked" : "reason locked late", b ? "good" : "");
+      return;
+    }
+    const sec = teamSec(), left = TEAM_SECONDS - sec, n = state.opened.length, b = bonusFor(sec);
+    setCell(0, "Time left", left >= 0 ? fmt(left) : "+" + fmt(-left), left >= 0 ? "of " + fmt(TEAM_SECONDS) : "Time's up. Lock your reason.", left <= 60 ? "bad" : left <= 120 ? "warn" : "");
+    if (n < LIMIT) setCell(1, "Exhibits left", String(LIMIT - n), "of 5", "");
+    else if (!state.extra) setCell(1, "Exhibits left", "0", "a 6th costs −2", "warn");
+    else setCell(1, "Exhibits left", "0", "6th used: −2", "bad");
+    setCell(2, "Early bonus", "+" + b, b === 5 ? "until " + fmt(BONUS5_LEFT) + " left" : b === 3 ? "until " + fmt(BONUS3_LEFT) + " left" : "no bonus now", b ? "good" : "");
+  }
+
+  function renderBoard() {
+    const n = state.opened.length, canNormal = n < LIMIT, canExtra = n === LIMIT && !state.extra, locked = !!state.reasonAt;
+    board.innerHTML = EXHIBITS.map((e) => {
+      const k = state.opened.indexOf(e.id);
+      let cls = "tile", status, dis = false;
+      if (k > -1) { status = "Opened " + ordinal(k + 1); cls += " is-open"; }
+      else if (locked) { status = "Sealed"; dis = true; }
+      else if (canNormal) status = "Sealed";
+      else if (canExtra) { status = "6th costs −2"; cls += " is-extra"; }
+      else { status = "No exhibits left"; dis = true; }
+      return `<button type="button" class="${cls}" data-id="${e.id}" id="tile-${e.id}"${dis ? " disabled" : ""}><span class="tile-n">Exhibit ${e.n}</span><span class="tile-t">${esc(e.title)}</span><span class="tile-d">${esc(e.inside)}</span><span class="tile-s">${status}</span></button>`;
+    }).join("");
+  }
+
+  const evHTML = (id, k, isNew) => {
+    const e = EX[id];
+    return `<article class="ev${isNew ? " is-new" : ""}" id="ev-${id}" tabindex="-1"><div class="ev-head"><span class="ev-num">Exhibit ${e.n}</span><span>${esc(e.src)}</span><span class="ev-order">Opened ${ordinal(k + 1)}${k === LIMIT ? " · −2" : ""}</span></div><h4 class="ev-title">${esc(e.title)}</h4><div class="ev-body">${e.body}</div></article>`;
+  };
+  function renderEvidence(newId) {
+    evidence.innerHTML = state.opened.length ? state.opened.map((id, k) => evHTML(id, k, id === newId)).join("") : '<p class="empty">Nothing opened yet. Agree on an exhibit with your team, then tap it above.</p>';
+    $("#ev-count").textContent = state.opened.length ? "· " + state.opened.length : "";
+  }
+
+  function renderProofs() {
+    const need = Math.min(2, state.opened.length);
+    $("#proof-hint").textContent = need === 2 ? "Pick the 2 exhibits that best prove your answer." : need === 1 ? "Pick the exhibit that best proves your answer." : "You didn't open any exhibits, so there is nothing to pick.";
+    $("#proofs").innerHTML = state.opened.map((id) => {
+      const on = state.dec.proofs.includes(id), full = state.dec.proofs.length >= 2 && !on;
+      return `<label class="proof${on ? " is-on" : ""}${full ? " is-dim" : ""}"><input type="checkbox" id="proof-${id}" value="${id}"${on ? " checked" : ""}${full ? " disabled" : ""}><span class="proof-n">Exhibit ${EX[id].n}</span><span class="proof-t">${esc(EX[id].title)}</span></label>`;
+    }).join("");
+  }
+  function renderDecide() { renderOptions($("#dec-opts"), "dec", state.dec.answer); renderProofs(); }
+
+  const euros = (n) => `<span class="eur" aria-label="Cost level ${n} of 4">${"€".repeat(n)}<span class="off">${"€".repeat(4 - n)}</span></span>`;
+  function renderFix() {
+    const s = teamScore();
+    $("#fix-locked").innerHTML = `<b>${esc(optText(state.dec.answer))}</b><span class="hint">Locked with ${timeText(s.sec, TEAM_SECONDS)} · finish-early bonus ${signed(s.speedPts)}</span>`;
+    $("#fix-evidence").innerHTML = state.opened.length ? state.opened.map((id, k) => evHTML(id, k, false)).join("") : '<p class="empty">Your team didn\'t open any exhibits.</p>';
+    $("#fix-ev-count").textContent = "· " + state.opened.length;
+    $("#fixes").innerHTML = FIXES.map((x) => {
+      const on = x.id === state.fix;
+      return `<label class="fixc${on ? " is-on" : ""}"><input type="radio" name="fix" id="fix-${x.id}" value="${x.id}"${on ? " checked" : ""}><span class="fixc-top"><span class="fixc-n">Quote · fix ${x.n}</span><span class="fixc-dot" aria-hidden="true"></span></span><span class="fixc-t">${esc(x.label)}</span><span class="fixc-d">${esc(x.detail)}</span><span class="fixc-meta"><span class="fixc-k">Cost</span><span>${euros(x.cost)}${esc(x.costText)}</span><span class="fixc-k">Works in</span><span>${esc(x.time)}</span></span></label>`;
+    }).join("");
+  }
+
+  function renderReveal() {
+    $("#reveal-wait").hidden = state.revealed;
+    $("#reveal-done").hidden = !state.revealed;
+    const s = teamScore();
+    if (!state.revealed) {
+      $("#lock-line").textContent = "Your team locked its reason with " + timeText(s.sec, TEAM_SECONDS) + " and its fix " + (fixSec() <= FIX_SECONDS ? "in time" : "after the fix time") + ".";
+      const rows = [
+        ["Your reason", optText(state.dec.answer)],
+        ["Your proof", state.dec.proofs.length ? state.dec.proofs.map(exText).join(" / ") : "None"],
+        ["Finish-early bonus", signed(s.speedPts) + " · locked with " + timeText(s.sec, TEAM_SECONDS)],
+        ["Your fix", fixText(state.fix)],
+        ["Exhibits opened", state.opened.length + (state.extra ? " (including a 6th)" : "")]
+      ];
+      $("#locked-summary").innerHTML = rows.map((r) => `<div><dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd></div>`).join("");
+      return;
+    }
+    const solo = soloPts(), beat = s.answerPts > solo ? "Yes" : s.answerPts === solo ? "Same" : "No";
+    $("#scorehero").innerHTML =
+      `<div class="score score-main"><span class="score-k">Team score</span><span class="score-v">${s.total}<small>/${MAX}</small></span><span class="score-note">${pct(s.total)}% · ${esc(OPT[state.dec.answer] ? OPT[state.dec.answer].label : "No reason")}</span></div>` +
+      `<div class="score"><span class="score-k">Your gut call</span><span class="score-v">${solo}<small>/10</small></span><span class="score-note">${esc(OPT[state.solo.answer] ? OPT[state.solo.answer].label : "No gut call")} · sure ${state.solo.conf}/5</span></div>` +
+      `<div class="score"><span class="score-k">Team beat your gut</span><span class="score-v">${beat}</span><span class="score-note">Reason points: team ${s.answerPts}, you alone ${solo}</span></div>`;
+    const v = VERDICT[state.dec.answer] || ["", "Your team didn't lock a reason."];
+    const verdict = $("#verdict");
+    verdict.textContent = v[1];
+    verdict.setAttribute("data-tone", v[0]);
+
+    let proofSub = state.dec.proofs.length ? state.dec.proofs.map((id) => "Exhibit " + EX[id].n + " " + (s.counted.includes(id) ? "✓" : "✗")).join(" · ") : "No proof picked";
+    if (!s.onTrack && state.dec.proofs.length) proofSub += " · proof only counts for a right-track reason";
+    const fx = FIX[state.fix];
+    const rows = [
+      ["The reason", optText(state.dec.answer), s.answerPts],
+      ["Proof", proofSub, s.proofPts],
+      ["Finish early", "Reason locked with " + timeText(s.sec, TEAM_SECONDS), s.speedPts],
+      ["The fix", fx ? fixText(fx.id) + " · " + RATE[fx.rate].label.toLowerCase() : "Not chosen", s.fixPts],
+      ["6th exhibit", state.extra ? "Opened a 6th exhibit" : "Not used", s.penalty]
+    ];
+    $("#breakdown").innerHTML = "<tbody>" + rows.map((r) => `<tr><td>${esc(r[0])}<span class="sub">${esc(r[1])}</span></td><td class="${tone(r[2])}">${signed(r[2])}</td></tr>`).join("") + `<tr class="total"><td>Total</td><td>${s.total} / ${MAX}</td></tr></tbody>`;
+
+    const stars = (n) => `<span class="stars" aria-label="Rated ${n} out of 3">${"★".repeat(n)}<span class="star-off">${"★".repeat(3 - n)}</span></span>`;
+    $("#fixlist").innerHTML = FIXES.slice().sort((a, b) => RATE[a.rate].order - RATE[b.rate].order || FIXES.indexOf(a) - FIXES.indexOf(b)).map((x) => {
+      const mine = x.id === state.fix, r = RATE[x.rate];
+      return `<li class="exrow${mine ? " is-mine" : ""}"><div class="exrow-top"><span class="exrow-n">Fix ${x.n}</span><span class="exrow-t">${esc(x.label)}</span><span class="exrow-tags">${mine ? '<span class="chip chip-open">Your pick</span>' : ""}<span class="chip ${r.cls}">${r.label} · ${signed(FIX_POINTS[x.rate])}</span></span></div><p class="exrow-m">${stars(r.stars)} ${esc(x.why)}</p></li>`;
+    }).join("");
+
+    $("#exlist").innerHTML = EXHIBITS.slice().sort((a, b) => ROLE[a.role].order - ROLE[b.role].order || EXHIBITS.indexOf(a) - EXHIBITS.indexOf(b)).map((e) => {
+      const opened = state.opened.includes(e.id);
+      return `<li class="exrow"><div class="exrow-top"><span class="exrow-n">Exhibit ${e.n}</span><span class="exrow-t">${esc(e.title)}</span><span class="exrow-tags">${opened ? '<span class="chip chip-open">You opened it</span>' : ""}<span class="chip ${ROLE[e.role].cls}">${ROLE[e.role].label}</span></span></div><p class="exrow-m">${esc(e.meaning)}</p></li>`;
+    }).join("");
+    if (!cardPng && !cardBusy) makeCard();
+  }
+
+  function renderFeedback() {
+    [["objective", "#fb-objective"], ["clarity", "#fb-clarity"], ["teamwork", "#fb-teamwork"]].forEach(([k, sel]) => {
+      $$(sel + " input").forEach((i) => { i.checked = Number(i.value) === state.fb[k]; });
+      syncOn($(sel));
+    });
+    $$("#fb-time input").forEach((i) => { i.checked = i.value === state.fb.time; });
+    syncOn($("#fb-time"));
+    $("#fb-improve").value = state.fb.improve;
+    hideErr($("#fb-err"));
+    $("#fb-send").disabled = false;
+  }
+  function renderDone() {
+    $("#done-line").textContent = canCollect() ? "Your feedback was sent. Case closed." : COLLECT_URL ? "Case closed. Feedback is collected on the class website only." : "Case closed. This version doesn't collect feedback yet.";
+  }
+
+  function renderAll() {
+    const host = isHost();
+    $("#play").hidden = host;
+    $("#host").hidden = !host;
+    document.body.classList.toggle("is-host", host);
+    $("#band-pill").textContent = host ? "Facilitator screen" : "Team game · 29 min";
+    $("#band-lede").textContent = host
+      ? "Put this on the big screen. Players scan the code to join, and you run the clock from here."
+      : "Corner Cup lost 40% of its sales. Guess alone, investigate as a team, lock the real reason, then choose the one fix the owner should pay for.";
+    if (host) { renderHost(); return; }
+    renderSteps();
+    STAGES.forEach((s) => { $("#stage-" + s).hidden = state.stage !== s; });
+    $("#team-wait").hidden = !!state.teamStartAt;
+    $("#team-live").hidden = !state.teamStartAt;
+    if (state.stage === "team" && state.teamStartAt) { renderBoard(); renderEvidence(); }
+    if (state.stage === "decide") renderDecide();
+    if (state.stage === "fix") renderFix();
+    if (state.stage === "reveal") renderReveal();
+    if (state.stage === "feedback") renderFeedback();
+    if (state.stage === "done") renderDone();
+    renderStatus();
+  }
+  function go(stage) { state.stage = stage; save(); renderAll(); toTop(); }
+
+  function fillAlone() {
+    $("#f-name").value = state.name;
+    $("#f-team").value = state.team;
+    $$("#where input").forEach((i) => { i.checked = i.value === state.where; });
+    syncOn($("#where"));
+    renderOptions($("#solo-opts"), "solo", state.solo.answer);
+    $$("#conf input").forEach((i) => { i.checked = Number(i.value) === state.solo.conf; });
+    syncOn($("#conf"));
+    $("#f-code").value = "";
+    ["#alone-err", "#dec-err", "#fix-err", "#code-err", "#fb-err"].forEach((s) => hideErr($(s)));
+    $("#copy-fallback").hidden = true;
+    $("#copy-msg").textContent = "";
+  }
+
+  /* ---------- Modal ---------- */
+  const modal = $("#modal"), modalOk = $("#modal-ok"), modalCancel = $("#modal-cancel");
+  let modalCb = null, lastFocus = null;
+  function openModal(o) {
+    lastFocus = document.activeElement;
+    $("#modal-title").textContent = o.title;
+    $("#modal-body").innerHTML = o.body;
+    modalOk.textContent = o.ok;
+    modalCancel.textContent = o.cancel || "Cancel";
+    modalOk.className = "btn " + (o.danger ? "btn-danger" : "btn-accent");
+    modalCb = o.onOk;
+    modal.hidden = false;
+    modalOk.focus();
+  }
+  function closeModal() {
+    modal.hidden = true;
+    modalCb = null;
+    if (lastFocus && document.body.contains(lastFocus)) { try { lastFocus.focus(); } catch (e) {} }
+  }
+  modalOk.addEventListener("click", () => { const cb = modalCb; closeModal(); if (cb) cb(); });
+  modalCancel.addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+  const viewer = $("#viewer");
+  function openViewer() {
+    if (!cardUrl) return;
+    lastFocus = document.activeElement;
+    $("#viewer-img").src = cardUrl;
+    viewer.hidden = false;
+    $("#viewer-x").focus();
+  }
+  function closeViewer() { viewer.hidden = true; if (lastFocus && document.body.contains(lastFocus)) { try { lastFocus.focus(); } catch (e) {} } }
+  $("#viewer-x").addEventListener("click", closeViewer);
+  viewer.addEventListener("click", (e) => { if (e.target === viewer) closeViewer(); });
+  document.addEventListener("keydown", (e) => {
+    if (!viewer.hidden && e.key === "Escape") { closeViewer(); return; }
+    if (modal.hidden) return;
+    if (e.key === "Escape") closeModal();
+    if (e.key === "Tab") {
+      const f = [modalOk, modalCancel], i = f.indexOf(document.activeElement);
+      e.preventDefault();
+      f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus();
+    }
+  });
+
+  /* ---------- Step 1 · Alone ---------- */
+  $("#f-name").addEventListener("input", (e) => { state.name = e.target.value; save(); });
+  $("#f-team").addEventListener("input", (e) => { state.team = e.target.value; save(); });
+  $("#where").addEventListener("change", (e) => { state.where = e.target.value; syncOn($("#where")); save(); });
+  $("#solo-opts").addEventListener("change", (e) => { state.solo.answer = e.target.value; syncOn($("#solo-opts")); save(); });
+  $("#conf").addEventListener("change", (e) => { state.solo.conf = Number(e.target.value); syncOn($("#conf")); save(); });
+  $("#lock-solo").addEventListener("click", () => {
+    const miss = [];
+    if (!state.name.trim()) miss.push("your name");
+    if (!state.team.trim()) miss.push("your team");
+    if (!state.where) miss.push("where you are today");
+    if (!state.solo.answer) miss.push("your gut call");
+    if (!state.solo.conf) miss.push("how sure you are");
+    if (miss.length) { showErr($("#alone-err"), "Add " + listJoin(miss) + " first."); return; }
+    hideErr($("#alone-err"));
+    go("team");
+  });
+
+  /* ---------- Step 2 · Team ---------- */
+  $("#start-team").addEventListener("click", () => {
+    if (!state.teamStartAt) state.teamStartAt = Date.now();
+    save(); renderAll(); toTop();
+  });
+  function goToEvidence(id) {
+    const el = document.getElementById("ev-" + id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    try { el.focus({ preventScroll: true }); } catch (e) {}
+  }
+  function openExhibit(id, isExtra) {
+    if (state.reasonAt || state.opened.includes(id)) return;
+    if (!isExtra && state.opened.length >= LIMIT) return;
+    if (isExtra && (state.extra || state.opened.length !== LIMIT)) return;
+    state.opened.push(id);
+    if (isExtra) state.extra = true;
+    save(); renderBoard(); renderEvidence(id); renderStatus(); goToEvidence(id);
+  }
+  board.addEventListener("click", (ev) => {
+    const t = ev.target.closest(".tile");
+    if (!t || t.disabled) return;
+    const id = t.getAttribute("data-id"), e = EX[id], n = state.opened.length;
+    if (state.opened.includes(id)) { goToEvidence(id); return; }
+    if (n < LIMIT) {
+      openModal({ title: "Open exhibit " + e.n + "?", body: `<p><strong>${esc(e.title)}</strong><br>${esc(e.inside)}</p><p>This is exhibit ${n + 1} of your 5. Open it only if your team agreed.</p>`, ok: "Open it", onOk: () => openExhibit(id, false) });
+    } else if (!state.extra) {
+      openModal({ title: "Open a 6th exhibit?", body: `<p><strong>Exhibit ${e.n} · ${esc(e.title)}</strong><br>${esc(e.inside)}</p><p>This costs your team 2 points. Everyone in your team should open the same one.</p>`, ok: "Open it for −2", onOk: () => openExhibit(id, true) });
+    }
+  });
+  $("#to-decide").addEventListener("click", () => go("decide"));
+
+  /* ---------- Step 3 · Decide ---------- */
+  $("#dec-opts").addEventListener("change", (e) => { state.dec.answer = e.target.value; syncOn($("#dec-opts")); save(); });
+  $("#proofs").addEventListener("change", (e) => {
+    const id = e.target.value, fid = e.target.id;
+    if (e.target.checked) { if (!state.dec.proofs.includes(id) && state.dec.proofs.length < 2) state.dec.proofs.push(id); }
+    else state.dec.proofs = state.dec.proofs.filter((x) => x !== id);
+    save(); renderProofs();
+    const f = document.getElementById(fid);
+    if (f) f.focus();
+  });
+  $("#back-team").addEventListener("click", () => go("team"));
+  $("#lock-reason").addEventListener("click", () => {
+    const errs = [], need = Math.min(2, state.opened.length);
+    if (!state.dec.answer) errs.push("Pick the real reason.");
+    if (state.dec.proofs.length !== need) errs.push(need === 2 ? "Pick 2 exhibits as proof." : "Pick 1 exhibit as proof.");
+    if (errs.length) { showErr($("#dec-err"), errs.join(" ")); return; }
+    hideErr($("#dec-err"));
+    const sec = teamSec(), b = bonusFor(sec);
+    const bonusLine = b > 0 ? `With ${fmt(TEAM_SECONDS - sec)} left, your team earns the <strong>+${b}</strong> finish-early bonus.` : "There is no finish-early bonus at this point.";
+    openModal({ title: "Lock your reason?",
+      body: `<p><strong>${esc(optText(state.dec.answer))}</strong></p><p>You can't change it afterwards. ${bonusLine}</p><p>Then you get 3 minutes to choose the fix. Make sure everyone in your team locks the same reason.</p>`,
+      ok: "Lock it", cancel: "Not yet",
+      onOk: () => { if (!state.reasonAt) state.reasonAt = Date.now(); go("fix"); } });
+  });
+
+  /* ---------- Step 4 · Fix ---------- */
+  $("#fixes").addEventListener("change", (e) => { if (e.target.name !== "fix") return; state.fix = e.target.value; syncOn($("#fixes")); hideErr($("#fix-err")); save(); });
+  $("#lock-fix").addEventListener("click", () => {
+    if (!state.fix) { showErr($("#fix-err"), "Pick one fix first."); return; }
+    hideErr($("#fix-err"));
+    openModal({ title: "Lock your fix?",
+      body: `<p><strong>${esc(fixText(state.fix))}</strong></p><p>You can't change it afterwards. Make sure everyone in your team locks the same fix.</p>`,
+      ok: "Lock it", cancel: "Not yet",
+      onOk: () => { if (!state.fixAt) state.fixAt = Date.now(); go("reveal"); } });
+  });
+
+  /* ---------- Step 5 · Reveal ---------- */
+  function tryReveal() {
+    const v = $("#f-code").value.trim().toUpperCase();
+    if (v === REVEAL_CODE) {
+      state.revealed = true;
+      save(); hideErr($("#code-err")); renderAll(); toTop(); sendResult();
+    } else showErr($("#code-err"), v ? "That code doesn't match. Check it with your facilitator." : "Type the code your facilitator reads out.");
+  }
+  $("#do-reveal").addEventListener("click", tryReveal);
+  $("#f-code").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); tryReveal(); } });
+  $("#to-feedback").addEventListener("click", () => go("feedback"));
+
+  function resultText() {
+    const s = teamScore();
+    const lines = [
+      "The Empty Café · result",
+      state.name.trim() + " · " + state.team.trim() + " · " + (WHERE_LABEL[state.where] || ""),
+      "Gut call: " + optText(state.solo.answer) + " (sure " + state.solo.conf + "/5) = " + soloPts() + "/10",
+      "Team reason: " + optText(state.dec.answer) + " = " + s.answerPts,
+      "Proof: " + signed(s.proofPts) + " · Finish early: " + signed(s.speedPts) + " (locked with " + timeText(s.sec, TEAM_SECONDS) + ")",
+      "Fix: " + fixText(state.fix) + " = " + signed(s.fixPts) + " · 6th exhibit: " + (state.extra ? "−2" : "no"),
+      "Team score: " + s.total + "/" + MAX,
+      "Exhibits opened: " + (state.opened.length ? state.opened.map((id) => EX[id].n + " " + EX[id].title).join("; ") : "none")
+    ];
+    return lines.join("\n");
+  }
+  $("#copy").addEventListener("click", () => {
+    const text = resultText(), msg = $("#copy-msg"), ta = $("#copy-fallback");
+    const fallback = () => { ta.value = text; ta.hidden = false; ta.focus(); ta.select(); msg.textContent = "Copy the text below."; };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => { msg.textContent = "Copied. Paste it into your team chat."; ta.hidden = true; }, fallback);
+      else fallback();
+    } catch (e) { fallback(); }
+  });
+
+  /* ---------- Result card: PNG and PDF ---------- */
+  let dlPromise = null;
+  const getDl = () => {
+    if (!dlPromise) dlPromise = window.claude && typeof window.claude.use === "function" ? window.claude.use("downloads").then((ns) => ns || null, () => null) : Promise.resolve(null);
+    return dlPromise;
+  };
+  const inFrame = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
+  let cardPng = null, cardPdf = null, cardUrl = "", cardJob = 0, cardBusy = false;
+  const CARD = { bg: "#F2F0EC", surface: "#FFFFFF", line: "#E2DDD4", ink: "#171411", muted: "#615B53", hero: "#171411", heroInk: "#F6F2EC", heroMuted: "#C2BAAF", heroAccent: "#FF9B6E", good: "#1D7A47", bad: "#B42318" };
+  const CF = { display: '"Anton", Impact, "Arial Narrow Bold", sans-serif', body: '"Instrument Sans", "Helvetica Neue", Arial, sans-serif', mono: '"IBM Plex Mono", Menlo, Consolas, monospace' };
+  const HOLD_TO_SAVE = "Downloads are blocked in this app. Tap the card, then press and hold it (or right-click it) to save the image.";
+  const slug = (s) => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "result";
+  function fontsReady() {
+    if (!document.fonts || !document.fonts.load) return Promise.resolve();
+    const specs = ['400 104px "Anton"', '700 54px "Instrument Sans"', '600 30px "Instrument Sans"', '500 26px "Instrument Sans"', '500 22px "IBM Plex Mono"'];
+    return Promise.race([Promise.all(specs.map((s) => document.fonts.load(s, "THE EMPTY CAFÉ 0123456789").catch(() => null))), new Promise((r) => setTimeout(r, 1500))]);
+  }
+  function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+  function wrapLines(ctx, text, maxW) {
+    const out = [];
+    let line = "";
+    String(text).split(/\s+/).forEach((w) => { const t = line ? line + " " + w : w; if (line && ctx.measureText(t).width > maxW) { out.push(line); line = w; } else line = t; });
+    if (line) out.push(line);
+    return out;
+  }
+  function drawCard() {
+    const W = 1200, M = 40, cv = document.createElement("canvas");
+    cv.width = W; cv.height = 2800;
+    const ctx = cv.getContext("2d");
+    const f = (w, s, fam) => `${w} ${s}px ${fam}`;
+    const fit = (text, w, s, fam, maxW, min) => { ctx.font = f(w, s, fam); while (ctx.measureText(text).width > maxW && s > min) { s -= 2; ctx.font = f(w, s, fam); } };
+    const s = teamScore(), so = OPT[state.solo.answer];
+    const name = state.name.trim() || "Player", team = state.team.trim() || "Team";
+    const date = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    const sub = [team, WHERE_LABEL[state.where], date].filter(Boolean).join(" · ");
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = CARD.bg; ctx.fillRect(0, 0, W, cv.height);
+    // Header block
+    const hx = M, hy = M, hw = W - 2 * M, hh = 560, L = hx + 52, IW = hw - 104, half = L + IW / 2;
+    ctx.save(); rr(ctx, hx, hy, hw, hh, 32); ctx.clip();
+    ctx.fillStyle = CARD.hero; ctx.fillRect(hx, hy, hw, hh);
+    const g = ctx.createRadialGradient(hx + hw, hy, 0, hx + hw, hy, 820);
+    g.addColorStop(0, "rgba(232,98,43,0.50)"); g.addColorStop(1, "rgba(232,98,43,0)");
+    ctx.fillStyle = g; ctx.fillRect(hx, hy, hw, hh);
+    ctx.restore();
+    ctx.fillStyle = CARD.heroAccent; ctx.font = f(500, 22, CF.mono); ctx.fillText("TEAM BUILDING AND LEADERSHIP · SESSION 9 · RESULT CARD", L, hy + 70);
+    ctx.fillStyle = CARD.heroInk; fit("THE EMPTY CAFÉ", 400, 104, CF.display, IW, 48); ctx.fillText("THE EMPTY CAFÉ", L, hy + 178);
+    fit(name, 700, 54, CF.body, IW, 28); ctx.fillText(name, L, hy + 262);
+    ctx.fillStyle = CARD.heroMuted; fit(sub, 500, 28, CF.body, IW, 18); ctx.fillText(sub, L, hy + 306);
+    ctx.fillStyle = "rgba(246,242,236,0.16)"; ctx.fillRect(L, hy + 344, IW, 2);
+    ctx.fillStyle = CARD.heroMuted; ctx.font = f(500, 22, CF.mono); ctx.fillText("YOUR GUT CALL", L, hy + 398); ctx.fillText("TEAM SCORE", half, hy + 398);
+    const big = (num, x, color, tail) => { ctx.fillStyle = color; ctx.font = f(400, 112, CF.display); ctx.fillText(num, x, hy + 514); const w = ctx.measureText(num).width; ctx.fillStyle = CARD.heroMuted; ctx.font = f(600, 30, CF.body); ctx.fillText(tail, x + w + 14, hy + 514); };
+    big(String(soloPts()), L, CARD.heroInk, "/ 10");
+    big(String(s.total), half, CARD.heroAccent, `/ ${MAX} · ${pct(s.total)}%`);
+    // Sections: measured first, then drawn
+    const CX = M + 44, CW = W - 2 * M - 88;
+    const opH = (o) => {
+      if (o.k === "label") return 34;
+      if (o.k === "para") { ctx.font = f(o.w, o.s, CF.body); return wrapLines(ctx, o.t, CW).length * Math.round(o.s * 1.3) + (o.gap == null ? 12 : o.gap); }
+      if (o.k === "row") { ctx.font = f(500, 24, CF.body); return 40 + wrapLines(ctx, o.d, CW - 140).length * 32 + 18; }
+      return 72;
+    };
+    const drawOps = (ops, y0) => {
+      let yy = y0;
+      ops.forEach((o) => {
+        if (o.k === "label") { ctx.fillStyle = CARD.muted; ctx.font = f(500, 22, CF.mono); ctx.fillText(o.t, CX, yy + 22); }
+        else if (o.k === "para") { ctx.fillStyle = o.c || CARD.ink; ctx.font = f(o.w, o.s, CF.body); const lh = Math.round(o.s * 1.3); wrapLines(ctx, o.t, CW).forEach((ln, i) => ctx.fillText(ln, CX, yy + o.s + i * lh)); }
+        else if (o.k === "row") {
+          ctx.fillStyle = CARD.line; ctx.fillRect(CX, yy, CW, 2);
+          ctx.fillStyle = CARD.ink; ctx.font = f(700, 28, CF.body); ctx.fillText(o.t, CX, yy + 40);
+          ctx.fillStyle = o.p > 0 ? CARD.good : o.p < 0 ? CARD.bad : CARD.muted; ctx.font = f(500, 30, CF.mono); ctx.textAlign = "right"; ctx.fillText(signed(o.p), CX + CW, yy + 40); ctx.textAlign = "left";
+          ctx.fillStyle = CARD.muted; ctx.font = f(500, 24, CF.body); wrapLines(ctx, o.d, CW - 140).forEach((ln, i) => ctx.fillText(ln, CX, yy + 72 + i * 32));
+        } else {
+          ctx.fillStyle = CARD.ink; ctx.fillRect(CX, yy, CW, 3);
+          ctx.font = f(700, 32, CF.body); ctx.fillText(o.t, CX, yy + 52);
+          ctx.font = f(400, 46, CF.display); ctx.textAlign = "right"; ctx.fillText(o.v, CX + CW, yy + 56); ctx.textAlign = "left";
+        }
+        yy += opH(o);
+      });
+    };
+    let y = hy + hh + 28;
+    const section = (ops) => {
+      const padY = 40, h = ops.reduce((a, o) => a + opH(o), 0) + padY * 2;
+      ctx.fillStyle = CARD.surface; rr(ctx, M, y, W - 2 * M, h, 28); ctx.fill();
+      ctx.strokeStyle = CARD.line; ctx.lineWidth = 2; rr(ctx, M, y, W - 2 * M, h, 28); ctx.stroke();
+      drawOps(ops, y + padY);
+      y += h + 24;
+    };
+    section([
+      { k: "label", t: "YOUR GUT CALL · ALONE" },
+      { k: "para", t: so ? `${so.k} · ${so.label}` : "No gut call locked", w: 700, s: 36, gap: 8 },
+      { k: "para", t: `Sure ${state.solo.conf}/5 · ${soloPts()} of 10 points`, w: 500, s: 26, c: CARD.muted, gap: 0 }
+    ]);
+    const fx = FIX[state.fix];
+    section([
+      { k: "label", t: "TEAM RESULT" },
+      { k: "row", t: "The reason", d: optText(state.dec.answer), p: s.answerPts },
+      { k: "row", t: "Proof", d: state.dec.proofs.length ? state.dec.proofs.map((id) => `${EX[id].n} ${EX[id].title}`).join(" · ") : "No proof picked", p: s.proofPts },
+      { k: "row", t: "Finish early", d: `Reason locked with ${timeText(s.sec, TEAM_SECONDS)}`, p: s.speedPts },
+      { k: "row", t: "The fix", d: fx ? `${fx.n} · ${fx.label}` : "Not chosen", p: s.fixPts },
+      { k: "row", t: "6th exhibit", d: state.extra ? "Opened a 6th exhibit" : "Not used", p: s.penalty },
+      { k: "total", t: "Team score", v: `${s.total} / ${MAX}` }
+    ]);
+    section([
+      { k: "label", t: "THE ANSWER" },
+      { k: "para", t: "Real reason: F · Changes in the café's staff", w: 600, s: 30, gap: 6 },
+      { k: "para", t: "Best fix: 05 · Rebuild a full, trained morning team", w: 600, s: 30, gap: 0 }
+    ]);
+    ctx.fillStyle = CARD.muted; ctx.font = f(500, 22, CF.body); ctx.fillText("Made by Seven Kings · Corner Cup and FastBean are invented", M + 4, y + 16);
+    const out = document.createElement("canvas");
+    out.width = W; out.height = Math.ceil(y + 52);
+    out.getContext("2d").drawImage(cv, 0, 0);
+    return out;
+  }
+  /* A one-page A4 PDF holding the card as a JPEG image. */
+  function buildPdf(jpg, imgW, imgH) {
+    const enc = new TextEncoder(), parts = [], offsets = [];
+    let len = 0;
+    const push = (d) => { const b = typeof d === "string" ? enc.encode(d) : d; parts.push(b); len += b.length; };
+    const PW = 595.28, PH = 841.89, PM = 28;
+    const sc = Math.min((PW - 2 * PM) / imgW, (PH - 2 * PM) / imgH), w = imgW * sc, h = imgH * sc, x = (PW - w) / 2, yy = PH - PM - h;
+    const content = `q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${yy.toFixed(2)} cm /Im0 Do Q`;
+    const obj = (n, body) => { offsets[n] = len; push(`${n} 0 obj\n${body}\nendobj\n`); };
+    push("%PDF-1.4\n%âãÏÓ\n");
+    obj(1, "<< /Type /Catalog /Pages 2 0 R >>");
+    obj(2, "<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+    obj(3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`);
+    offsets[4] = len;
+    push(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${imgW} /Height ${imgH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpg.length} >>\nstream\n`);
+    push(jpg);
+    push("\nendstream\nendobj\n");
+    obj(5, `<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+    obj(6, "<< /Title (The Empty Cafe - result card) /Producer (Seven Kings) >>");
+    const xref = len;
+    let t = "xref\n0 7\n0000000000 65535 f \n";
+    for (let i = 1; i <= 6; i++) t += String(offsets[i]).padStart(10, "0") + " 00000 n \n";
+    push(t);
+    push(`trailer\n<< /Size 7 /Root 1 0 R /Info 6 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
+    const out = new Uint8Array(len);
+    let o = 0;
+    parts.forEach((p) => { out.set(p, o); o += p.length; });
+    return out;
+  }
+  async function makeCard() {
+    const job = ++cardJob;
+    cardBusy = true;
+    $("#dl-png").disabled = true; $("#dl-pdf").disabled = true;
+    $("#dl-msg").textContent = "Preparing your card…";
+    try {
+      await fontsReady();
+      if (job !== cardJob) return;
+      const cv = drawCard();
+      const png = await new Promise((r) => cv.toBlob(r, "image/png"));
+      const jpg = await new Promise((r) => cv.toBlob(r, "image/jpeg", 0.92));
+      if (job !== cardJob) return;
+      if (!png || !jpg) throw new Error("no image");
+      cardPdf = buildPdf(new Uint8Array(await jpg.arrayBuffer()), cv.width, cv.height);
+      cardPng = png;
+      if (cardUrl) URL.revokeObjectURL(cardUrl);
+      cardUrl = URL.createObjectURL(png);
+      const img = $("#card-preview");
+      img.src = cardUrl;
+      img.hidden = false;
+      $("#dl-msg").textContent = "";
+    } catch (e) {
+      cardPng = null; cardPdf = null;
+      $("#dl-msg").textContent = "Your card couldn't be made in this browser. Use Copy my result as text instead.";
+    } finally {
+      if (job === cardJob) { cardBusy = false; $("#dl-png").disabled = false; $("#dl-pdf").disabled = false; }
+    }
+  }
+  async function saveCard(kind) {
+    const msg = $("#dl-msg");
+    if (!cardPng || !cardPdf) { msg.textContent = "Your card is still being prepared. Try again in a second."; return; }
+    const base = "empty-cafe-" + slug(state.name || "result");
+    const file = kind === "pdf" ? { filename: base + ".pdf", data: new Blob([cardPdf], { type: "application/pdf" }) } : { filename: base + ".png", data: cardPng };
+    if (window.claude) {
+      const api = await getDl();
+      if (!api) { msg.textContent = HOLD_TO_SAVE; return; }
+      try { await api.save(file); msg.textContent = "Saved. Check your downloads."; }
+      catch (e) {
+        const c = e && e.code;
+        msg.textContent = c === "declined" ? "Download cancelled."
+          : c === "rate_limited" ? "A download is already waiting for your answer."
+          : (c === "extension_not_enabled" || c === "rejected_extension") && kind === "pdf" ? "PDF isn't available here. Download the PNG instead."
+          : HOLD_TO_SAVE;
+      }
+      return;
+    }
+    const url = URL.createObjectURL(file.data), a = document.createElement("a");
+    a.href = url; a.download = file.filename; a.rel = "noopener"; a.style.display = "none";
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 15000);
+    msg.textContent = inFrame
+      ? "If nothing downloaded, this preview blocks downloads. Tap the card, then press and hold it (or right-click it) to save the image."
+      : "Downloading. If nothing appears, tap the card, then press and hold it (or right-click it) to save the image.";
+  }
+  $("#dl-png").addEventListener("click", () => saveCard("png"));
+  $("#dl-pdf").addEventListener("click", () => saveCard("pdf"));
+  $("#prev-open").addEventListener("click", openViewer);
+
+  /* ---------- Collecting results and feedback in a Google Sheet ---------- */
+  const canCollect = () => !!COLLECT_URL && !window.claude && /^https?:$/.test(location.protocol);
+  function sendToSheet(payload) {
+    if (!canCollect()) return Promise.resolve(false);
+    try {
+      return fetch(COLLECT_URL, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) }).then(() => true, () => false);
+    } catch (e) { return Promise.resolve(false); }
+  }
+  function sendResult() {
+    if (state.resultSent || !canCollect()) return;
+    const s = teamScore();
+    sendToSheet({
+      kind: "result", game: "The Empty Café", name: state.name.trim(), team: state.team.trim(), role: WHERE_LABEL[state.where] || "",
+      gut: optText(state.solo.answer), sure: state.solo.conf, gutPoints: soloPts(),
+      problem: optText(state.dec.answer), problemPoints: s.answerPts + s.proofPts,
+      fix: fixText(state.fix), fixPoints: s.fixPts,
+      early: s.speedPts, sixthClue: s.penalty, overtime: fixSec() > FIX_SECONDS ? "Fix locked late" : "", teamScore: s.total,
+      clues: state.opened.map((id) => EX[id].n).join(" "), lockedWith: timeText(s.sec, TEAM_SECONDS)
+    }).then((ok) => { if (ok) { state.resultSent = true; save(); } });
+  }
+
+  /* ---------- Feedback ---------- */
+  [["objective", "#fb-objective"], ["clarity", "#fb-clarity"], ["teamwork", "#fb-teamwork"]].forEach(([k, sel]) => {
+    $(sel).addEventListener("change", (e) => { state.fb[k] = Number(e.target.value); syncOn($(sel)); save(); });
+  });
+  $("#fb-time").addEventListener("change", (e) => { state.fb.time = e.target.value; syncOn($("#fb-time")); save(); });
+  $("#fb-improve").addEventListener("input", (e) => { state.fb.improve = e.target.value; save(); });
+  $("#fb-back").addEventListener("click", () => go("reveal"));
+  $("#done-back").addEventListener("click", () => go("reveal"));
+  $("#fb-send").addEventListener("click", () => {
+    const miss = [];
+    if (!state.fb.objective) miss.push("question 1");
+    if (!state.fb.clarity) miss.push("question 2");
+    if (state.fb.improve.trim().length < 2) miss.push("question 3");
+    if (miss.length) { showErr($("#fb-err"), "Answer " + listJoin(miss) + " first."); return; }
+    hideErr($("#fb-err"));
+    $("#fb-send").disabled = true;
+    const done = () => { state.fbSent = true; go("done"); };
+    sendToSheet({ kind: "feedback", game: "The Empty Café", objective: state.fb.objective, clarity: state.fb.clarity, improve: state.fb.improve.trim(), time: TIME_LABEL[state.fb.time] || "", teamwork: state.fb.teamwork || "" }).then(done, done);
+  });
+
+  /* ---------- Reset ---------- */
+  $("#reset").addEventListener("click", () => {
+    openModal({ title: "Start over?", body: "<p>This clears your name, your answers and the timers on this device.</p>", ok: "Start over", danger: true,
+      onOk: () => {
+        state = fresh();
+        try { localStorage.removeItem(KEY); } catch (e) {}
+        cardJob++; cardBusy = false; cardPng = null; cardPdf = null;
+        if (cardUrl) { URL.revokeObjectURL(cardUrl); cardUrl = ""; }
+        $("#card-preview").hidden = true;
+        fillAlone(); renderAll(); toTop();
+      } });
+  });
+
+  /* ---------- Facilitator screen ---------- */
+  const PHASES = [
+    { id: "intro",    t: "Intro",    min: 2,  tip: "Objective and rules. Everyone scans the code and types their name and team." },
+    { id: "alone",    t: "Alone",    min: 3,  tip: "No talking. Everyone reads the case and makes a gut call on their own phone." },
+    { id: "team",     t: "Team",     min: 10, tip: "Teams open up to 5 of the 12 exhibits and lock the reason. Locking early earns +5 or +3." },
+    { id: "fix",      t: "Fix",      min: 3,  tip: "Each team's fix timer starts when it locks its reason. Teams choose one fix and lock it." },
+    { id: "reveal",   t: "Reveal",   min: 3,  tip: "Read out the code. Everyone sees the truth and saves their card, and you collect each team's score." },
+    { id: "debrief",  t: "Debrief",  min: 7,  tip: "Four questions, about 90 seconds each, then the leadership angle." },
+    { id: "feedback", t: "Feedback", min: 1,  tip: "Everyone gives feedback on their own phone. It's anonymous." }
+  ];
+  const SESSION = fmt(PHASES.reduce((a, p) => a + p.min, 0) * 60);
+  const freshHost = () => ({ v: 2, i: 0, run: 0, acc: PHASES.map(() => 0), code: false, rows: [1, 2, 3, 4, 5].map(() => ({ team: "", score: "" })) });
+  function cleanHost(h) {
+    if (!h || h.v !== 2) return null;
+    const o = Object.assign(freshHost(), h);
+    if (!Array.isArray(o.acc) || o.acc.length !== PHASES.length) o.acc = PHASES.map(() => 0);
+    o.i = Math.min(Math.max(0, o.i | 0), PHASES.length - 1);
+    if (!Array.isArray(o.rows) || !o.rows.length) o.rows = freshHost().rows;
+    return o;
+  }
+  let host = freshHost();
+  const saveHost = () => { try { localStorage.setItem(HOST_KEY, JSON.stringify(host)); } catch (e) {} };
+  const phaseMs = (i) => (host.acc[i] || 0) + (i === host.i && host.run ? Date.now() - host.run : 0);
+  const totalMs = () => PHASES.reduce((a, _, i) => a + phaseMs(i), 0);
+  function pauseHost() { if (host.run) { host.acc[host.i] += Date.now() - host.run; host.run = 0; } }
+  const shareLink = () => (!window.claude && /^https?:$/.test(location.protocol) ? location.origin + location.pathname : SHARE_URL);
+
+  function renderQR() {
+    const box = $("#qr");
+    let m = null;
+    try { if (typeof MakeQR === "function") m = MakeQR(shareLink()); } catch (e) { m = null; }
+    if (!m) { box.textContent = "QR code unavailable here. Share the link below."; return; }
+    const n = m.size, q = 4, w = n + q * 2;
+    let d = "";
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (m.isDark(r, c)) d += `M${c + q} ${r + q}h1v1h-1z`;
+    box.innerHTML = `<svg viewBox="0 0 ${w} ${w}" role="img" aria-label="QR code that opens the game" shape-rendering="crispEdges"><rect class="qr-bg" width="${w}" height="${w}"/><path class="qr-fg" d="${d}"/></svg>`;
+  }
+  function renderHostClock() {
+    const p = PHASES[host.i], el = phaseMs(host.i) / 1000, left = p.min * 60 - el, tEl = $("#clock-time");
+    let toneName = "", label = host.run ? "Running" : el > 0 ? "Paused" : "Ready";
+    if (left >= 0) { tEl.textContent = fmt(left); toneName = left <= 60 ? "warn" : ""; }
+    else { tEl.textContent = "+" + fmt(-left); toneName = "bad"; if (host.run) label = "Over time"; }
+    tEl.setAttribute("data-tone", toneName);
+    $("#clock-label").textContent = label;
+    $("#clock-total").textContent = `Session ${fmt(totalMs() / 1000)} of ${SESSION}`;
+    $("#h-start").textContent = host.run ? "Pause" : el > 0 ? "Resume" : "Start";
+  }
+  function renderRail() {
+    $("#rail").innerHTML = PHASES.map((p, i) => `<li><button type="button" data-i="${i}" data-s="${i < host.i ? "done" : i === host.i ? "now" : "todo"}"${i === host.i ? ' aria-current="step"' : ""}><span class="r-n">${pad(i + 1)}</span><span class="r-t">${p.t}</span><span class="r-m">${p.min} min</span></button></li>`).join("");
+  }
+  function renderRows() {
+    $("#sbr-rows").innerHTML = host.rows.map((r, i) => `<div class="sbr"><label class="sr-only" for="sbr-t-${i}">Team ${i + 1} name</label><input type="text" id="sbr-t-${i}" data-i="${i}" data-k="team" value="${esc(r.team)}" placeholder="Team ${i + 1}" autocomplete="off"><label class="sr-only" for="sbr-s-${i}">Team ${i + 1} score</label><input type="text" class="num" id="sbr-s-${i}" data-i="${i}" data-k="score" value="${esc(r.score)}" placeholder="0" inputmode="numeric" autocomplete="off"></div>`).join("");
+    renderRank();
+  }
+  function renderRank() {
+    const list = host.rows.map((r, i) => ({ team: r.team.trim() || `Team ${i + 1}`, score: parseInt(String(r.score).replace("−", "-"), 10) })).filter((r) => !isNaN(r.score)).sort((a, b) => b.score - a.score);
+    $("#sbr-rank").innerHTML = list.length ? list.map((r, k) => `<li><span class="rk">${k + 1}</span><span class="rt">${esc(r.team)}</span><span class="rs">${r.score}<small>${pct(r.score)}%</small></span></li>`).join("") : '<li class="empty">Scores appear here, highest first.</li>';
+  }
+  function renderHost() {
+    const p = PHASES[host.i];
+    $("#clock-phase").textContent = p.t;
+    $("#clock-tip").textContent = p.tip;
+    $$("[data-panel]").forEach((s) => { s.hidden = s.getAttribute("data-panel") !== p.id; });
+    $("#join-url").textContent = shareLink();
+    renderQR();
+    $("#h-codebox").hidden = !host.code;
+    $("#h-codebox").textContent = host.code ? REVEAL_CODE : "";
+    $("#h-code").textContent = host.code ? "Hide the code" : "Show the reveal code";
+    $("#h-back").disabled = host.i === 0;
+    $("#h-next").disabled = host.i === PHASES.length - 1;
+    renderRail();
+    renderRows();
+    renderHostClock();
+  }
+  $("#h-start").addEventListener("click", () => { if (host.run) pauseHost(); else host.run = Date.now(); saveHost(); renderHostClock(); });
+  $("#h-next").addEventListener("click", () => { if (host.i >= PHASES.length - 1) return; pauseHost(); host.i += 1; host.run = Date.now(); saveHost(); renderHost(); });
+  $("#h-back").addEventListener("click", () => { if (host.i <= 0) return; pauseHost(); host.i -= 1; saveHost(); renderHost(); });
+  $("#rail").addEventListener("click", (e) => { const b = e.target.closest("button[data-i]"); if (!b) return; pauseHost(); host.i = Number(b.getAttribute("data-i")); saveHost(); renderHost(); });
+  $("#h-reset").addEventListener("click", () => {
+    openModal({ title: "Reset the clock?", body: "<p>The clock goes back to the intro. The scoreboard stays.</p>", ok: "Reset clock", danger: true,
+      onOk: () => { const rows = host.rows; host = freshHost(); host.rows = rows; saveHost(); renderHost(); } });
+  });
+  $("#h-code").addEventListener("click", () => { host.code = !host.code; saveHost(); renderHost(); });
+  $("#sbr-rows").addEventListener("input", (e) => { const t = e.target, i = Number(t.getAttribute("data-i")), k = t.getAttribute("data-k"); if (!host.rows[i] || !k) return; host.rows[i][k] = t.value; saveHost(); renderRank(); });
+  $("#sbr-add").addEventListener("click", () => { host.rows.push({ team: "", score: "" }); saveHost(); renderRows(); const last = $(`#sbr-t-${host.rows.length - 1}`); if (last) last.focus(); });
+  $("#copy-link").addEventListener("click", () => {
+    const msg = $("#copy-link-msg"), fallback = () => { msg.textContent = "Select the link above and copy it."; };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(shareLink()).then(() => { msg.textContent = "Link copied."; }, fallback);
+      else fallback();
+    } catch (e) { fallback(); }
+  });
+
+  /* ---------- Boot ---------- */
+  function tick() {
+    if (isHost()) renderHostClock();
+    else if (!statusbar.hidden) renderStatus();
+  }
+  let booted = false;
+  function start(data) {
+    if (booted) return;
+    booted = true;
+    state = (data && data.state && clean(data.state)) || clean(load(KEY)) || fresh();
+    host = (data && data.host && cleanHost(data.host)) || cleanHost(load(HOST_KEY)) || freshHost();
+    $("#case-full").innerHTML = CASE_HTML;
+    $$(".case-slot").forEach((s) => { s.innerHTML = CASE_HTML; });
+    fillAlone();
+    renderAll();
+    setInterval(tick, 1000);
+    window.addEventListener("hashchange", () => { closeModal(); renderAll(); toTop(); });
+    try { getDl(); } catch (e) {}
+  }
+  try { if (window.claude && window.claude.hot && window.claude.hot.snapshot) window.claude.hot.snapshot(() => ({ state, host })); } catch (e) {}
+  if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start);
+  else start((window.claude && window.claude.hot && window.claude.hot.data) || {});
+})();
+</script>
+</body>
+</html>
